@@ -6,6 +6,7 @@ package herramientas;
 
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -57,13 +58,46 @@ public class Archivo {
      */
     public String LeerArchivo(Path archivo){
         String resultado = "";
-        try {
-            resultado = Files.readString(archivo);
-        } catch (IOException error) {
-            resultado = "ERROR: " + error.getMessage();
+        File arch = archivo.toFile();
+        
+        if(arch.exists()){
+            try {
+                resultado = Files.readString(archivo);
+            } catch (IOException error) {
+                resultado = "ERROR: " + error.getMessage();
+            }
         }
+        else{
+            resultado = "ERROR: El archivo " + archivo.toString() + " no existe";
+        }
+        
+        
         return resultado;
     }
     
-    public void 
+    /**
+     * Permite guardar un dato guardado en un string en un archivo.
+     * @param archivo Ruta al archivo
+     * @param dato String a guardar
+     */
+    public void StringAArchivo(Path archivo, String dato){
+        
+        File arch = archivo.toFile();
+        
+        if(arch.exists()){
+           try {
+                FileWriter escritor = new FileWriter(arch);
+                escritor.write(dato);
+           } 
+           catch (IOException e) {
+               System.out.println(
+                       "ERROR StringAArchivo: "
+                       + e.getMessage()
+                       + "\n" + e.toString() );
+           } 
+        }
+        
+        
+        
+    }
 }
