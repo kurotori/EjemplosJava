@@ -46,12 +46,12 @@ public class Archivo {
             if( ! archivo.exists()){
                 
                 archivo.createNewFile();
-                resultado="N:";
+                resultado="N;";
                 System.out.println("Archivo creado: " + archivo.getName() );
                 
             }
             else{
-                resultado="S:";
+                resultado="S;";
                 System.out.println("Archivo " + archivo.getName() + " ya existe");
                 
             }
@@ -59,7 +59,7 @@ public class Archivo {
             
         }
         catch(IOException error){
-            resultado = "E:ERROR CrearArchivo: "+ error.getMessage();
+            resultado = "E;ERROR CrearArchivo: "+ error.getMessage();
         }
 
         return resultado;
