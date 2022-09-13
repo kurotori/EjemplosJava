@@ -6,9 +6,9 @@
 package jconga;
 
 import baraja.Carta;
-import java.awt.Rectangle;
+//import java.awt.Rectangle;
 import java.util.ArrayList;
-import javax.swing.JPanel;
+//import javax.swing.JPanel;
 import org.netbeans.lib.awtextra.AbsoluteConstraints;
 
 /**
@@ -17,30 +17,43 @@ import org.netbeans.lib.awtextra.AbsoluteConstraints;
  */
 public class PrepararJuego extends javax.swing.JFrame {
     
-    private ArrayList<ButtonCarta> botonesJuego = new ArrayList<>();
+    private ArrayList<PanelCarta> botonesJuego = new ArrayList<>();
     
     /**
      * Creates new form PrepararJuego
      */
     public PrepararJuego() {
         initComponents();
+        //Para pruebas
+        //System.out.println("H:"+this.getSize().height + " W:"+this.getSize().width);
     }
     
     public PrepararJuego(ArrayList<Carta> cartas) {
         initComponents();
         
+        /**
+         * Tamaño base de la ventana: H:277 W:350
+         */
+        
+        this.setSize(
+                (10+(110*cartas.size())),
+                this.getSize().height);
+        
         int posX = 10;
         int posY = 10;
         
+        
+        
              
         for(Carta carta:cartas){
-            ButtonCarta btn = new ButtonCarta();
+            PanelCarta btn = new PanelCarta();
             
             getContentPane().add(btn, new AbsoluteConstraints(posX,posY,108,164));
             getContentPane().revalidate();
             validate();
             posX = posX + 110;        
 
+            
             btn.setCarta(carta);
             btn.ActualizarImagen();
             

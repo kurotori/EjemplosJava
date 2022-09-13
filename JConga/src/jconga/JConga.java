@@ -5,7 +5,8 @@
  */
 package jconga;
 
-import herramientas.Archivo;
+import herramientas.Configuracion;
+
 
 /**
  *
@@ -17,15 +18,18 @@ public class JConga {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        herramientas.Archivo archivo = new Archivo();
-        String crearArchivoConf = archivo.CrearArchivo("./", "configuracion.json");
-        System.out.println(crearArchivoConf);
+        
+        
+        // Inicialización de clases auxiliares.
+
+        herramientas.Configuracion configuracion = new Configuracion();
+        configuracion.ChequeoInicial();
         
         
         
         Base b = new Base();
         b.setVisible(true);
+       
     }
     
 }

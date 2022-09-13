@@ -14,10 +14,20 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 /**
- *
+ *Herramientas para el manejo de archivos
  * @author luiss
  */
 public class Archivo {
+    
+    private String sop;
+    
+    public Archivo(){
+        //Detección de SO
+
+        this.sop = System.getProperty("os.name");
+    }
+    
+    
     
     /**
      * Permite crear un archivo en la ruta y con el nombre indicado, si ya
@@ -32,19 +42,24 @@ public class Archivo {
 
         try{
             File archivo = new File(ruta+nombre);
-            if(!archivo.exists()){
-                if(archivo.createNewFile()){
-                    resultado = "Archivo created: " + archivo.getName();
-                }
+            
+            if( ! archivo.exists()){
+                
+                archivo.createNewFile();
+                resultado="N;";
+                System.out.println("Archivo creado: " + archivo.getName() );
                 
             }
             else{
-                resultado = "Archivo " + archivo.getName() + " ya existe";
+                resultado="S;";
+                System.out.println("Archivo " + archivo.getName() + " ya existe");
+                
             }
+            resultado += archivo.getCanonicalPath();
             
         }
         catch(IOException error){
-            resultado = error.getMessage();
+            resultado = "E;ERROR CrearArchivo: "+ error.getMessage();
         }
 
         return resultado;
@@ -86,8 +101,9 @@ public class Archivo {
         
         if(arch.exists()){
            try {
-                FileWriter escritor = new FileWriter(arch);
+                FileWriter escritor = new FileWriter(arch,false);
                 escritor.write(dato);
+                escritor.close();
            } 
            catch (IOException e) {
                System.out.println(
