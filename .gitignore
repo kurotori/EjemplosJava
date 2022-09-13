@@ -12,3 +12,8 @@
 /Ventanitas/build/
 /Ventanitas/dist/
 /Ventanitas/nbproject/private/
+/Chat/nbproject/private/
+nbproject
+build
+dist
+Chat/nbproject/private/private.xml
