@@ -9,37 +9,20 @@ import red.Servidor;
 
 /**
  *
- * @author luiss
+ * @author sebastian
  */
-public class Principal extends javax.swing.JFrame {
-    Inicio vInicio;
-    String usuario;
-    String ipServidor;
-    int puertoServidor;
-    
-    //Servidor servidor;
+public class Inicio extends javax.swing.JFrame {
+   
     Cliente cliente;
+
     /**
-     * Creates new form Principal
+     * Creates new form Inicio
      */
-    
-    public Principal() {        
+    public Inicio() {
         initComponents();
-    }
-    
-    public Principal(String usuario, String ipS, int puertoS, Inicio vInicio) {
-        this.vInicio = vInicio;
-        this.usuario = usuario;
-        this.ipServidor = ipS;
-        this.puertoServidor = puertoS;
-        
-        //servidor = new Servidor();
-        //servidor.iniciar(puertoS);
-        
         cliente = new Cliente();
-        cliente.iniciarConexion(ipServidor, puertoServidor);
+        cliente.iniciarConexion("localhost", 6666);
         
-        initComponents();
     }
 
     /**
@@ -51,21 +34,15 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txta_listaMensajes = new javax.swing.JTextArea();
+        btn_Enviar = new javax.swing.JButton();
         txt_mensaje = new javax.swing.JTextField();
-        btnEnviar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        txta_listaMensajes.setColumns(20);
-        txta_listaMensajes.setRows(5);
-        jScrollPane1.setViewportView(txta_listaMensajes);
-
-        btnEnviar.setText("Enviar");
-        btnEnviar.addMouseListener(new java.awt.event.MouseAdapter() {
+        btn_Enviar.setText("Enviar");
+        btn_Enviar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnEnviarMouseClicked(evt);
+                btn_EnviarMouseClicked(evt);
             }
         });
 
@@ -73,37 +50,33 @@ public class Principal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txt_mensaje)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEnviar)))
+                .addComponent(txt_mensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_Enviar)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txt_mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEnviar))
-                .addContainerGap(58, Short.MAX_VALUE))
+                    .addComponent(btn_Enviar)
+                    .addComponent(txt_mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnEnviarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnviarMouseClicked
+    private void btn_EnviarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_EnviarMouseClicked
         // TODO add your handling code here:
         String mensaje = txt_mensaje.getText();
-        cliente.enviarMensaje(usuario,mensaje);
         txt_mensaje.setText("");
-    }//GEN-LAST:event_btnEnviarMouseClicked
+        
+        cliente.enviarMensaje(mensaje);
+    }//GEN-LAST:event_btn_EnviarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -122,28 +95,26 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Principal().setVisible(true);
+                new Inicio().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnEnviar;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton btn_Enviar;
     private javax.swing.JTextField txt_mensaje;
-    private javax.swing.JTextArea txta_listaMensajes;
     // End of variables declaration//GEN-END:variables
 }

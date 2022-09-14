@@ -44,6 +44,11 @@ public class Inicio extends javax.swing.JFrame {
 
         btn_Entrar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btn_Entrar.setText("Entrar");
+        btn_Entrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btn_EntrarMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -92,6 +97,16 @@ public class Inicio extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_EntrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_EntrarMouseClicked
+        // TODO add your handling code here:
+        String usuario = txt_nombreUsuario.getText();
+        String ipServidor = txt_servidor.getText();
+        
+        Principal vPrincipal = new Principal(usuario, ipServidor, 6666, this);
+        vPrincipal.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btn_EntrarMouseClicked
 
     /**
      * @param args the command line arguments

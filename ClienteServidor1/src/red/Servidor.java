@@ -4,23 +4,18 @@
  */
 package red;
 
-import herramientas.Texto;
 import java.net.*;
 import java.io.*;
-
 /**
  *
- * @author luiss
+ * @author sebastian
  */
-public class Servidor{
+public class Servidor {
     private ServerSocket socketServidor;
     private Socket socketCliente;
     
     private BufferedReader entrada;
     private PrintWriter salida;
-    
-    Texto texto = new Texto();
-    
     
     public void iniciar(int puerto){
         System.out.println("Iniciando el servidor en el puerto "+ puerto);
@@ -34,7 +29,7 @@ public class Servidor{
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             
             String mensaje = entrada.readLine();
-            System.out.println( texto.analizarMensaje(mensaje) );
+            System.out.println( "Se recibió: " + mensaje );
             
         } 
         catch (IOException e) {
@@ -43,21 +38,8 @@ public class Servidor{
     }
     
     
-     public void cerrar() {
-        try {
-            entrada.close();
-            salida.close();
-            socketCliente.close();
-            socketServidor.close();
-         } catch (IOException e) {
-             System.out.println("ERROR al cerrar el servidor: "+e.toString());
-         }
-        
-    }
-    
-     
-     public static void main(String[] args) {
-        Servidor servidor = new Servidor();
-        servidor.iniciar(6666);
+    public static void main(String[] args) {
+        Servidor srv = new Servidor();
+        srv.iniciar(6666);
     }
 }
