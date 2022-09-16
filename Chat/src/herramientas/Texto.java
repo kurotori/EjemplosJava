@@ -10,13 +10,21 @@ package herramientas;
  */
 public class Texto {
     
-    public String analizarMensaje(String mensaje){
-        String resultado="";
+    
+    /**
+     * Interpreta un mensaje enviado por el usuario al servidor
+     * @param mensaje
+     * @return 
+     */
+    public String[] analizarMensaje(String mensaje){
         
-        String[] datosMensaje = mensaje.split("::");
+        String[] resultado = mensaje.split("::");
         
-        resultado = datosMensaje[0]+" dice: "+datosMensaje[1];
-        
+        if (resultado.length < 2) {
+            String[] r = {"ERROR","Mensaje no válido"};
+            resultado = r;
+        } 
+
         return resultado;
     }
     

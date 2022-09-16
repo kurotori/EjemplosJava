@@ -25,12 +25,19 @@ public class Servidor{
     public void iniciar(int puerto){
         System.out.println("Iniciando el servidor en el puerto "+ puerto);
         try {
-            socketServidor = new ServerSocket(puerto);
-            socketCliente = socketServidor.accept();
             
+            socketServidor = new ServerSocket(puerto);
+            System.out.println("Servidor iniciado");
+            
+            socketCliente = socketServidor.accept();
+            System.out.println("Se ha conectado un usuario desde la IP: "+
+                    socketCliente.getInetAddress().getHostAddress());
+            
+            //Entrada de datos desde el cliente conectado
             InputStreamReader lectorDeStream = new InputStreamReader(socketCliente.getInputStream());
             entrada = new BufferedReader(lectorDeStream);
             
+            //Salida de datos hacia el cliente conectado
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             
             String mensaje = entrada.readLine();
