@@ -5,6 +5,7 @@
 package red;
 
 import herramientas.Texto;
+import herramientas.Tiempo;
 import java.net.*;
 import java.io.*;
 
@@ -20,6 +21,7 @@ public class Servidor{
     private PrintWriter salida;
     
     Texto texto = new Texto();
+    Tiempo tiempo = new Tiempo();
     
     
     public void iniciar(int puerto){
@@ -27,10 +29,10 @@ public class Servidor{
         try {
             
             socketServidor = new ServerSocket(puerto);
-            System.out.println("Servidor iniciado");
+            System.out.println(tiempo.marcaTiempo()+"Servidor iniciado");
             
             socketCliente = socketServidor.accept();
-            System.out.println("Se ha conectado un usuario desde la IP: "+
+            System.out.println("Skmyhnlnhkjyyh-e ha conectado un usuario desde la IP: "+
                     socketCliente.getInetAddress().getHostAddress());
             
             //Entrada de datos desde el cliente conectado
@@ -38,6 +40,8 @@ public class Servidor{
             entrada = new BufferedReader(lectorDeStream);
             
             //Salida de datos hacia el cliente conectado
+            
+            
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             
             String mensaje = entrada.readLine();
