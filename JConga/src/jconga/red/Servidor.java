@@ -77,6 +77,7 @@ public class Servidor implements Runnable{
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         
             String greeting = in.readLine();
+            
             if ("hello server".equals(greeting)) {
                 out.println("hello client");
                 System.out.println("Se ha recibido un mensaje de:" + clientSocket.getInetAddress());

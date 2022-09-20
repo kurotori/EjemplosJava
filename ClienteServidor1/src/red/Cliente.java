@@ -33,8 +33,8 @@ public class Cliente {
         String resp="";
         try {
             salida.println(mensaje);
-            resp = entrada.readLine();
-        } catch (IOException e) {
+            //resp = entrada.readLine();
+        } catch (Exception e) {
             System.out.println("ERROR al enviar mensaje desde el cliente:" + e.toString());
         }
         

@@ -20,9 +20,9 @@ public class PruebaCliente {
                 Cliente client = new Cliente();
                 //client.DatosRed();
                 //client.ListarInterfacesDeRed();
-                client.escanearRed();
-                //client.iniciarConexion("127.0.0.1", 6666);
-                //String response = client.sendMessage("hello server");
-                //System.out.println("Respuesta recibida:" + response);
+                //client.escanearRed();
+                client.iniciarConexion("localhost", 6666);
+                String response = client.sendMessage("hello server");
+                System.out.println("Respuesta recibida:" + response);
     }
 }

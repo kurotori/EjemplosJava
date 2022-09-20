@@ -4,6 +4,7 @@
  */
 package ventanas;
 
+import chat.Usuario;
 import red.Cliente;
 import red.Servidor;
 
@@ -13,11 +14,10 @@ import red.Servidor;
  */
 public class Principal extends javax.swing.JFrame {
     Inicio vInicio;
-    String usuario;
+    Usuario usuario;
     String ipServidor;
     int puertoServidor;
     
-    //Servidor servidor;
     Cliente cliente;
     /**
      * Creates new form Principal
@@ -29,12 +29,9 @@ public class Principal extends javax.swing.JFrame {
     
     public Principal(String usuario, String ipS, int puertoS, Inicio vInicio) {
         this.vInicio = vInicio;
-        this.usuario = usuario;
+        this.usuario = new Usuario(usuario);
         this.ipServidor = ipS;
         this.puertoServidor = puertoS;
-        
-        //servidor = new Servidor();
-        //servidor.iniciar(puertoS);
         
         cliente = new Cliente();
         cliente.iniciarConexion(ipServidor, puertoServidor);
@@ -101,7 +98,7 @@ public class Principal extends javax.swing.JFrame {
     private void btnEnviarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnviarMouseClicked
         // TODO add your handling code here:
         String mensaje = txt_mensaje.getText();
-        cliente.enviarMensaje(usuario,mensaje);
+        cliente.enviarMensaje(usuario,"MENSAJE",mensaje);
         txt_mensaje.setText("");
     }//GEN-LAST:event_btnEnviarMouseClicked
 

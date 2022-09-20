@@ -32,20 +32,28 @@ public class Servidor{
             System.out.println(tiempo.marcaTiempo()+"Servidor iniciado");
             
             socketCliente = socketServidor.accept();
-            System.out.println("Skmyhnlnhkjyyh-e ha conectado un usuario desde la IP: "+
+            System.out.println(tiempo.marcaTiempo()+"Se ha conectado un usuario desde la IP: "+
                     socketCliente.getInetAddress().getHostAddress());
             
             //Entrada de datos desde el cliente conectado
             InputStreamReader lectorDeStream = new InputStreamReader(socketCliente.getInputStream());
             entrada = new BufferedReader(lectorDeStream);
             
-            //Salida de datos hacia el cliente conectado
-            
-            
+            //Salida de datos hacia el cliente conectado          
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             
-            String mensaje = entrada.readLine();
-            System.out.println( texto.analizarMensaje(mensaje) );
+            String mensaje = "";
+            
+            while (!mensaje.equalsIgnoreCase("salir")) {                
+                mensaje = entrada.readLine();
+                System.out.println( 
+                        tiempo.marcaTiempo() + 
+                        socketCliente.getInetAddress().getHostAddress() + 
+                        ":" + mensaje );
+            }
+                    
+                    
+                    ;
             
         } 
         catch (IOException e) {

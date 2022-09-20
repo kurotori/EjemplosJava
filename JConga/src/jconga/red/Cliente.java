@@ -26,9 +26,9 @@ import java.util.logging.Logger;
  * @author luiss
  */
 public class Cliente {
-    private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private Socket socketCliente;
+    private PrintWriter salida;
+    private BufferedReader entrada;
     private Herramientas h = new Herramientas();
     
         
@@ -39,29 +39,27 @@ public class Cliente {
     
     public void iniciarConexion(String ip, int port) throws IOException {
         try {
-            
-            clientSocket = new Socket(ip, port);
-            clientSocket.setSoTimeout(500);
-            clientSocket.connect(new InetSocketAddress(ip, port), 500   );
-            /*out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));*/
+            socketCliente = new Socket(ip, port);
+            salida = new PrintWriter(socketCliente.getOutputStream(), true);
+            InputStreamReader lectorDeStream = new InputStreamReader(socketCliente.getInputStream());               
+            entrada = new BufferedReader(lectorDeStream);
             
         } 
         catch (IOException e) {
-            System.out.println("ERROR: Sin Conexión en "+ip+" - "+e.getMessage());
+            System.out.println("ERROR: Sin Conexión en "+ip+" - "+e.toString());
         }
         
     }
 
     public String sendMessage(String msg) throws IOException {
-        out.println(msg);
-        String resp = in.readLine();
+        salida.println(msg);
+        String resp = entrada.readLine();
         return resp;
     }
 
     public void stopConnection() throws IOException {
-        in.close();
-        out.close();
-        clientSocket.close();
+        entrada.close();
+        salida.close();
+        socketCliente.close();
     }
 }

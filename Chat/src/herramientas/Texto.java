@@ -23,7 +23,10 @@ public class Texto {
         if (resultado.length < 2) {
             String[] r = {"ERROR","Mensaje no válido"};
             resultado = r;
-        } 
+        }
+        else{
+            
+        }
 
         return resultado;
     }
