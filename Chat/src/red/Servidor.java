@@ -54,7 +54,15 @@ public class Servidor{
             
             //Abrimos un bucle que se cierra con un mensaje específico
             while (!mensaje.equalsIgnoreCase("salir")) {                
+                
+                //Esperamos un mensaje del cliente y lo almacenamos en la variable 'mensaje'
                 mensaje = entrada.readLine();
+                
+                
+                //Respondemos al cliente con una confirmación
+                salida.println("Servidor::MSG_EST::OK");
+                
+                //Mostramos un registro del mensaje recibido
                 System.out.println( 
                         tiempo.marcaTiempo() + 
                         socketCliente.getInetAddress().getHostAddress() + 
@@ -78,8 +86,12 @@ public class Servidor{
     //
      public void cerrar() {
         try {
+            
+            System.out.println(tiempo.marcaTiempo()+"");
+            //Cerramos los flujos de entrada y salida
             entrada.close();
             salida.close();
+            //Cerramos el socket del cliente y el socket del servidor
             socketCliente.close();
             socketServidor.close();
          } catch (IOException e) {
