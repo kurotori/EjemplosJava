@@ -17,11 +17,16 @@ public class Servidor {
     private BufferedReader entrada;
     private PrintWriter salida;
     
+    /**
+     * Inicia el servidor en el puerto indicado
+     * @param puerto el puerto del sistema utilizado por el servidor
+     */
     public void iniciar(int puerto){
-        System.out.println("Iniciando el servidor en el puerto "+ puerto);
+        System.out.println("Iniciando el servidor en el puerto "+ puerto+"...");
         try {
             socketServidor = new ServerSocket(puerto);
             System.out.println("Servidor Iniciado");
+            System.out.println("Esperando clientes...");
             
             socketCliente = socketServidor.accept();
             System.out.println("Se ha conectado un cliente desde " + 
@@ -53,7 +58,10 @@ public class Servidor {
         }
     }
     
-    
+    /**
+     * Inicia el servidor automáticamente
+     * @param args 
+     */
     public static void main(String[] args) {
         Servidor srv = new Servidor();
         srv.iniciar(6666);
