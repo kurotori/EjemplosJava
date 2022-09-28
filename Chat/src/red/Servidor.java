@@ -24,14 +24,20 @@ public class Servidor{
     Tiempo tiempo = new Tiempo();
     
     
+    /**
+     * Permite iniciar el servidor en el puerto indicado
+     * @param puerto el puerto para abrir e iniciar el servidor
+     */
     public void iniciar(int puerto){
         System.out.println("Iniciando el servidor en el puerto "+ puerto);
         try {
-            
+            //Se abre el socket del servidor en el puerto indicado
             socketServidor = new ServerSocket(puerto);
             System.out.println(tiempo.marcaTiempo()+"Servidor iniciado");
             
+            //Se espera a que un cliente se conecte al servidor...
             socketCliente = socketServidor.accept();
+            //...y cuando sucede se anuncian sus datos
             System.out.println(tiempo.marcaTiempo()+"Se ha conectado un usuario desde la IP: "+
                     socketCliente.getInetAddress().getHostAddress());
             
@@ -42,8 +48,10 @@ public class Servidor{
             //Salida de datos hacia el cliente conectado          
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             
+            //Variable para almacenar los datos enviados desde el cliente
             String mensaje = "";
             
+            //Bucle de conexión. 
             while (!mensaje.equalsIgnoreCase("salir")) {                
                 mensaje = entrada.readLine();
                 System.out.println( 
@@ -51,9 +59,11 @@ public class Servidor{
                         socketCliente.getInetAddress().getHostAddress() + 
                         ":" + mensaje );
             }
+            
+            //Si se cierra el bucle, el servidor cierra el socket y sus conexiones.
+            cerrar();
                     
-                    
-                    ;
+                   
             
         } 
         catch (IOException e) {
@@ -62,6 +72,7 @@ public class Servidor{
     }
     
     
+    //
      public void cerrar() {
         try {
             entrada.close();
