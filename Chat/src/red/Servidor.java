@@ -31,6 +31,7 @@ public class Servidor{
     public void iniciar(int puerto){
         System.out.println("Iniciando el servidor en el puerto "+ puerto);
         try {
+
             //Se abre el socket del servidor en el puerto indicado
             socketServidor = new ServerSocket(puerto);
             System.out.println(tiempo.marcaTiempo()+"Servidor iniciado");
@@ -48,10 +49,10 @@ public class Servidor{
             //Salida de datos hacia el cliente conectado          
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             
-            //Variable para almacenar los datos enviados desde el cliente
+            //Preparamos un String para los datos de entrada desde el cliente
             String mensaje = "";
             
-            //Bucle de conexión. 
+            //Abrimos un bucle que se cierra con un mensaje específico
             while (!mensaje.equalsIgnoreCase("salir")) {                
                 mensaje = entrada.readLine();
                 System.out.println( 
@@ -59,12 +60,14 @@ public class Servidor{
                         socketCliente.getInetAddress().getHostAddress() + 
                         ":" + mensaje );
             }
+
             
             //Si se cierra el bucle, el servidor cierra el socket y sus conexiones.
             cerrar();
                     
                    
             
+
         } 
         catch (IOException e) {
             System.out.println("ERROR al iniciar el servidor: "+e.toString());
@@ -85,7 +88,9 @@ public class Servidor{
         
     }
     
-     
+     /**
+      * Permite iniciar el servid    * @param args 
+      */
      public static void main(String[] args) {
         Servidor servidor = new Servidor();
         servidor.iniciar(6666);

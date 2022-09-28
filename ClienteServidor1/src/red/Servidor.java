@@ -21,15 +21,31 @@ public class Servidor {
         System.out.println("Iniciando el servidor en el puerto "+ puerto);
         try {
             socketServidor = new ServerSocket(puerto);
+            System.out.println("Servidor Iniciado");
+            
             socketCliente = socketServidor.accept();
+            System.out.println("Se ha conectado un cliente desde " + 
+                    socketCliente.getInetAddress().getCanonicalHostName());
             
             InputStreamReader lectorDeStream = new InputStreamReader(socketCliente.getInputStream());
             entrada = new BufferedReader(lectorDeStream);
             
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             
-            String mensaje = entrada.readLine();
-            System.out.println( "Se recibió: " + mensaje );
+            String mensaje = "";
+            
+            while ( ! mensaje.equalsIgnoreCase("salir") ) {                
+                mensaje = entrada.readLine();
+                salida.println("OK");
+                System.out.println( "Se recibió: " + mensaje );
+            }
+            
+            System.out.println("Cerrando el servidor...");
+            entrada.close();
+            salida.close();
+            socketCliente.close();
+            socketServidor.close();
+            System.out.println("Servidor cerrado");
             
         } 
         catch (IOException e) {
