@@ -5,6 +5,7 @@
 package red;
 
 import chat.Usuario;
+import herramientas.Tiempo;
 import java.net.*;
 import java.io.*;
 
@@ -19,6 +20,8 @@ public class Cliente {
     private PrintWriter salida;
     // Objeto para recibir datos desde el servidor
     private BufferedReader entrada;
+    
+    Tiempo tiempo = new Tiempo();
     
 
     /**
@@ -72,8 +75,13 @@ public class Cliente {
         
         try {
             salida.println(usuario.getNombre()+"::"+tipo+"::"+datos);
-            
-        } catch (Exception e) {
+            String respuesta = entrada.readLine();
+            System.out.println(tiempo.marcaTiempo() +  respuesta);
+        }
+        catch (IOException e){
+            System.out.println("ERROR al enviar mensaje desde el cliente:" + e.toString());
+        }
+        catch (Exception e) {
             System.out.println("ERROR al enviar mensaje desde el cliente:" + e.toString());
         }
     }

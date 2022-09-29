@@ -35,6 +35,7 @@ public class Servidor{
             //Se abre el socket del servidor en el puerto indicado
             socketServidor = new ServerSocket(puerto);
             System.out.println(tiempo.marcaTiempo()+"Servidor iniciado");
+            System.out.println(tiempo.marcaTiempo() + "Esperando clientes...");
             
             //Se espera a que un cliente se conecte al servidor...
             socketCliente = socketServidor.accept();
@@ -53,14 +54,16 @@ public class Servidor{
             String mensaje = "";
             
             //Abrimos un bucle que se cierra con un mensaje específico
-            while (!mensaje.equalsIgnoreCase("salir")) {                
+            while ( ! mensaje.equalsIgnoreCase("salir")) {                
                 
                 //Esperamos un mensaje del cliente y lo almacenamos en la variable 'mensaje'
-                mensaje = entrada.readLine();
-                
+                mensaje = entrada.readLine();                
                 
                 //Respondemos al cliente con una confirmación
                 salida.println("Servidor::MSG_EST::OK");
+                
+                //Análisis del mensaje
+                String[] datosMensaje = texto.analizarMensaje(mensaje);
                 
                 //Mostramos un registro del mensaje recibido
                 System.out.println( 
@@ -68,22 +71,19 @@ public class Servidor{
                         socketCliente.getInetAddress().getHostAddress() + 
                         ":" + mensaje );
             }
-
             
             //Si se cierra el bucle, el servidor cierra el socket y sus conexiones.
             cerrar();
-                    
-                   
-            
-
-        } 
+                           } 
         catch (IOException e) {
             System.out.println("ERROR al iniciar el servidor: "+e.toString());
         }
     }
     
     
-    //
+    /**
+     * Cierra el servidor y sus conexiones.
+     */
      public void cerrar() {
         try {
             
@@ -101,10 +101,32 @@ public class Servidor{
     }
     
      /**
-      * Permite iniciar el servid    * @param args 
+      * Permite iniciar el servidor de forma automática.
+      * @param args 
       */
      public static void main(String[] args) {
+        
+        int puerto = 6666;
+         try {
+            if (args.length == 1) {
+                
+                if (Integer.parseInt(args[0]) < 1025) {    
+                    System.out.println(
+                            "ERROR: El número de puerto proporcionado es menor a 1025"+
+                            " y no se recomienda.");
+                    System.out.println("Se usará el valor de puerto por descarte (6666)");
+                }
+                else{
+                    puerto = Integer.parseInt(args[0]);
+                }
+            }
+         } catch (NumberFormatException e) {
+             System.out.println("ERROR: El parámetro proporcionado no es un número válido");
+             System.out.println("Se usará el valor de puerto por descarte (6666)");
+         }
+        
+         
         Servidor servidor = new Servidor();
-        servidor.iniciar(6666);
+        servidor.iniciar(puerto);
     }
 }
