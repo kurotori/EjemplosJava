@@ -4,6 +4,8 @@
  */
 package red;
 
+import chat.Sala;
+import chat.Usuario;
 import herramientas.Texto;
 import herramientas.Tiempo;
 import java.net.*;
@@ -23,6 +25,8 @@ public class Servidor{
     Texto texto = new Texto();
     Tiempo tiempo = new Tiempo();
     
+    //Auxiliar temporal. A revisión más adelante.
+    Sala sala = new Sala("Común");
     
     /**
      * Permite iniciar el servidor en el puerto indicado
@@ -34,11 +38,12 @@ public class Servidor{
 
             //Se abre el socket del servidor en el puerto indicado
             socketServidor = new ServerSocket(puerto);
-            System.out.println(tiempo.marcaTiempo()+"Servidor iniciado");
+            System.out.println(tiempo.marcaTiempo() + "Servidor iniciado");
             System.out.println(tiempo.marcaTiempo() + "Esperando clientes...");
             
             //Se espera a que un cliente se conecte al servidor...
             socketCliente = socketServidor.accept();
+            
             //...y cuando sucede se anuncian sus datos
             System.out.println(tiempo.marcaTiempo()+"Se ha conectado un usuario desde la IP: "+
                     socketCliente.getInetAddress().getHostAddress());
@@ -53,12 +58,15 @@ public class Servidor{
             //Preparamos un String para los datos de entrada desde el cliente
             String mensaje = "";
             
-            //Abrimos un bucle que se cierra con un mensaje específico
-            while ( ! mensaje.equalsIgnoreCase("salir")) {                
+            //Abrimos un bucle que se cierra con un mensaje específico, dentro de un 
+            try {
+                while ( ! mensaje.equalsIgnoreCase("salir")) {                
                 
                 //Esperamos un mensaje del cliente y lo almacenamos en la variable 'mensaje'
-                mensaje = entrada.readLine();                
-                
+                mensaje = entrada.readLine();
+                if ( mensaje == null ) {
+                    System.out.println("Nulo");
+                }
                 //Respondemos al cliente con una confirmación
                 salida.println("Servidor::MSG_EST::OK");
                 
@@ -70,11 +78,17 @@ public class Servidor{
                         tiempo.marcaTiempo() + 
                         socketCliente.getInetAddress().getHostAddress() + 
                         ":" + mensaje );
+                }
+            } 
+            catch (NullPointerException e) {
+                System.out.println("ERROR: mensaje nulo");
+                System.out.println(e.getMessage());
+                mensaje = "salir";
             }
             
             //Si se cierra el bucle, el servidor cierra el socket y sus conexiones.
             cerrar();
-                           } 
+        } 
         catch (IOException e) {
             System.out.println("ERROR al iniciar el servidor: "+e.toString());
         }
@@ -87,7 +101,7 @@ public class Servidor{
      public void cerrar() {
         try {
             
-            System.out.println(tiempo.marcaTiempo()+"");
+            System.out.println(tiempo.marcaTiempo()+"Cerrando el Servidor...");
             //Cerramos los flujos de entrada y salida
             entrada.close();
             salida.close();
@@ -106,27 +120,53 @@ public class Servidor{
       */
      public static void main(String[] args) {
         
-        int puerto = 6666;
-         try {
-            if (args.length == 1) {
-                
-                if (Integer.parseInt(args[0]) < 1025) {    
-                    System.out.println(
-                            "ERROR: El número de puerto proporcionado es menor a 1025"+
-                            " y no se recomienda.");
-                    System.out.println("Se usará el valor de puerto por descarte (6666)");
-                }
-                else{
-                    puerto = Integer.parseInt(args[0]);
-                }
-            }
-         } catch (NumberFormatException e) {
-             System.out.println("ERROR: El parámetro proporcionado no es un número válido");
-             System.out.println("Se usará el valor de puerto por descarte (6666)");
-         }
-        
-         
+        int puerto = 6666;         
         Servidor servidor = new Servidor();
         servidor.iniciar(puerto);
+    }
+    
+    /**
+     * Permite procesar un mensaje enviado desde la aplicación cliente según su tipo,
+     * tras pasar por el método analizarMensaje() de la clase Texto.
+     * @param datosMensaje 
+     */
+    private void procesarMensaje(String[] datosMensaje){
+        if (datosMensaje[0].equals("ERROR")) {
+            System.out.println(tiempo.marcaTiempo() + datosMensaje[0] + datosMensaje[1]);
+        } 
+        else {
+            switch (datosMensaje[1]) {
+                //Mensajes enviados por un usuario
+                case "MSG":
+                    
+                    break;
+                    
+                //Comandos enviados desde la aplicación cliente    
+                case "CMD":
+                    //Evaluación de los comandos
+                    switch (datosMensaje[2]) {
+                        case "LOGIN":
+                            String nombre = datosMensaje[3];
+                            loginUsuario(nombre);
+                            break;
+                        case "LOGOUT":
+                            
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                    break;
+                
+                //
+                default:
+                    throw new AssertionError();
+            }
+        }
+    }
+    
+    
+    private void loginUsuario(String nombreUsuario){
+        Usuario u = new Usuario(nombreUsuario);
+        sala.agregarUsuario(u);
     }
 }

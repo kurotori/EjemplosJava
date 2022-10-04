@@ -17,8 +17,14 @@ public class Texto {
      * @return 
      */
     public String[] analizarMensaje(String mensaje){
-        
-        String[] resultado = mensaje.split("::");
+        String[] resultado = {""};
+        try {
+            resultado = mensaje.split("::");
+        } catch (Exception e) {
+            String[] r ={"ERROR","Mensaje vacío"};
+            resultado = r;
+        }
+         
         
         if (resultado.length < 2) {
             String[] r = {"ERROR","Mensaje no válido"};

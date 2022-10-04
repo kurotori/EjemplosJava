@@ -11,10 +11,25 @@ import java.util.ArrayList;
  * @author sebastian
  */
 public class Sala {
-    public ArrayList<Usuario> usuarios =  new ArrayList<>();
+    private String nombre;
+    private ArrayList<Usuario> usuarios =  new ArrayList<>();
+    
+    public Sala(String nombre){
+        this.nombre = nombre;
+    }
+    
     
     public void agregarUsuario(Usuario usuario){
         usuarios.add(usuario);
         System.out.println("Se ha agregado al usuario "+ usuario.getNombre());
+        listarUsuarios();
+    }
+    
+    public void listarUsuarios(){
+        System.out.println("Sala: "+ this.nombre + " Usuarios Conectados: "+ usuarios.size());
+        
+        for (Usuario usuario : usuarios) {
+            System.out.println(usuarios.indexOf(usuario) +" - " + usuario.getNombre());
+        }
     }
 }
