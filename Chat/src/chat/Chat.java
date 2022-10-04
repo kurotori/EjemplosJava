@@ -5,6 +5,7 @@
 package chat;
 
 import red.Servidor;
+import ventanas.Inicio;
 
 /**
  *
@@ -16,8 +17,8 @@ public class Chat {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if (args.length>0) {
-            
+
+        if ( args.length > 0 ) {
             switch (args[0]) {
                 case "-s":
                     Servidor servidor = new Servidor();
@@ -27,7 +28,8 @@ public class Chat {
                     throw new AssertionError();
             }
         } else {
-            
+            Inicio inicio = new Inicio();
+            inicio.setVisible(true);
         }
     }
     
