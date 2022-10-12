@@ -4,6 +4,7 @@
  */
 package red;
 
+import herramientas.Texto;
 import java.net.*;
 import java.io.*;
 /**
@@ -16,6 +17,8 @@ public class Servidor {
     
     private BufferedReader entrada;
     private PrintWriter salida;
+    
+    private Texto texto = new Texto();
     
     /**
      * Inicia el servidor en el puerto indicado
@@ -37,12 +40,16 @@ public class Servidor {
             
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             
-            String mensaje = "";
+            String solicitud = "";
             
-            while ( ! mensaje.equalsIgnoreCase("salir") ) {                
-                mensaje = entrada.readLine();
-                salida.println("OK");
-                System.out.println( "Se recibió: " + mensaje );
+            while ( ! solicitud.equalsIgnoreCase("salir") ) {                
+                
+                solicitud = entrada.readLine();
+                
+                String[] datosSolicitud = texto.analizarSolicitud(solicitud);
+                
+                salida.println( datosSolicitud[0] );
+                System.out.println("Se recibió: " + datosSolicitud[1] );
             }
             
             System.out.println("Cerrando el servidor...");
