@@ -15,7 +15,7 @@ import java.io.*;
  *
  * @author luiss
  */
-public class Servidor{
+public class ServidorMulti{
     private ServerSocket socketServidor;
     private Socket socketCliente;
     
@@ -24,6 +24,9 @@ public class Servidor{
     
     Texto texto = new Texto();
     Tiempo tiempo = new Tiempo();
+    
+    boolean estado = true;
+    
     
     //Auxiliar temporal. A revisión más adelante.
     Sala sala = new Sala("Común");
@@ -38,16 +41,25 @@ public class Servidor{
 
             //Se abre el socket del servidor en el puerto indicado
             socketServidor = new ServerSocket(puerto);
+            //Se lo configura para permitir múltiples conexiones
+            socketServidor.setReuseAddress(true);
+            
             System.out.println(tiempo.marcaTiempo() + "Servidor iniciado");
             System.out.println(tiempo.marcaTiempo() + "Esperando clientes...");
             
-            //Se espera a que un cliente se conecte al servidor...
+            
+            
+            while (estado) {                
+                //Se espera a que un cliente se conecte al servidor...
             socketCliente = socketServidor.accept();
             
             //...y cuando sucede se anuncian sus datos
             System.out.println(tiempo.marcaTiempo()+"Se ha conectado un usuario desde la IP: "+
                     socketCliente.getInetAddress().getHostAddress());
             
+            /**
+             * Inicio MultiHilos
+             */
             
             //Entrada de datos desde el cliente conectado
             InputStreamReader lectorDeStream = new InputStreamReader(socketCliente.getInputStream());
@@ -86,6 +98,9 @@ public class Servidor{
                 System.out.println(e.getMessage());
                 mensaje = "salir";
             }
+            }
+            
+            
             
             //Si se cierra el bucle, el servidor cierra el socket y sus conexiones.
             cerrar();
@@ -122,7 +137,7 @@ public class Servidor{
      public static void main(String[] args) {
         
         int puerto = 6666;         
-        Servidor servidor = new Servidor();
+        ServidorMulti servidor = new ServidorMulti();
         servidor.iniciar(puerto);
     }
     
