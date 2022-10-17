@@ -4,25 +4,13 @@
  */
 package chat;
 
-import java.net.Socket;
-
 /**
  *
  * @author sebastian
  */
 public class Usuario {
     private String nombre;
-    private Socket conexion;
-    
-    /**
-     * Construye un objeto de clase Usuario para su uso en el Servidor
-     * @param nombre
-     * @param conexion 
-     */
-    public Usuario(String nombre, Socket conexion){
-        this.nombre = nombre;
-        this.conexion = conexion;
-    }
+    private boolean activo;
     
     
     /**
@@ -31,13 +19,22 @@ public class Usuario {
      */
     public Usuario(String nombre){
         this.nombre = nombre;
-        this.conexion = null;
+        this.activo = true;
     }
     
     
     public String getNombre() {
         return nombre;
     }
+
+    /**
+     * @return the conectado
+     */
+    public boolean esActivo() {
+        return activo;
+    }
     
-   
+    public void cambiarEstado(){
+        this.activo = ! this.activo;
+    } 
 }

@@ -16,7 +16,7 @@ public class Texto {
      * @param mensaje
      * @return 
      */
-    public String[] analizarMensaje(String mensaje){
+    public String[] analizarSolicitud(String mensaje){
         String[] resultado = {""};
         try {
             resultado = mensaje.split("::");
