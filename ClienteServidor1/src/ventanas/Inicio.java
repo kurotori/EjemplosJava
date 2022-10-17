@@ -21,7 +21,7 @@ public class Inicio extends javax.swing.JFrame {
     public Inicio() {
         initComponents();
         cliente = new Cliente();
-        cliente.iniciarConexion("localhost", 6666);
+        cliente.iniciarConexion("localhost", 6666,"");
         
     }
 

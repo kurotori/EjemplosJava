@@ -4,9 +4,11 @@
  */
 package red;
 
+import chat.Usuario;
 import herramientas.Texto;
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
 /**
  *
  * @author sebastian
@@ -20,6 +22,7 @@ public class Servidor {
     
     private Texto texto = new Texto();
     
+    ArrayList<Usuario> usuarios = new ArrayList<>();
     /**
      * Inicia el servidor en el puerto indicado
      * @param puerto el puerto del sistema utilizado por el servidor
@@ -47,6 +50,7 @@ public class Servidor {
                 solicitud = entrada.readLine();
                 
                 String[] datosSolicitud = texto.analizarSolicitud(solicitud);
+                ejecutarSolicitud(datosSolicitud);
                 
                 salida.println( datosSolicitud[0] );
                 System.out.println("Se recibió: " + datosSolicitud[1] );
@@ -73,4 +77,20 @@ public class Servidor {
         Servidor srv = new Servidor();
         srv.iniciar(6666);
     }
+    
+    private void ejecutarSolicitud(String[] datosSolicitud){
+        switch(datosSolicitud[0]){
+            case "LOGIN":
+                Usuario user = new Usuario(datosSolicitud[1]);
+                usuarios.add(user);
+                System.out.println(user.getNombre() + " ha iniciado sesión");
+                salida.println("Bienvenido al servidor");
+                break;
+            case "ERROR":
+                break;
+            case "MSG":
+                break;
+        }
+    }
+    
 }

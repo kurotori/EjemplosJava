@@ -15,12 +15,14 @@ public class Cliente {
     private PrintWriter salida;
     private BufferedReader entrada;
 
-    public void iniciarConexion(String ip, int port) {
+    public void iniciarConexion(String ip, int port,String nombre) {
         try {
             socketCliente = new Socket(ip, port);
             salida = new PrintWriter(socketCliente.getOutputStream(), true);
             InputStreamReader lectorDeStream = new InputStreamReader(socketCliente.getInputStream());               
             entrada = new BufferedReader(lectorDeStream);
+            
+            enviarMensaje("LOGIN::"+nombre);
         } catch (IOException e) {
             System.out.println("ERROR al iniciar la conexión cliente:" + e.toString());
         }
