@@ -22,8 +22,13 @@ public class HiloCliente implements Runnable {
     private UUID id;
     private Usuario usuario;
     
-    public HiloCliente(Socket socketCliente){
+    public HiloCliente(Socket socketCliente, 
+                       BufferedReader entrada, 
+                       PrintWriter salida){
+        
         this.socketCliente = socketCliente;
+        this.entrada = entrada;
+        this.salida = salida;
     }
 
     @Override

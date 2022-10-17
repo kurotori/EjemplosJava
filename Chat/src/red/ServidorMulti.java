@@ -10,6 +10,7 @@ import herramientas.Texto;
 import herramientas.Tiempo;
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,6 +27,8 @@ public class ServidorMulti{
     Tiempo tiempo = new Tiempo();
     
     boolean estado = true;
+    
+    ArrayList<HiloCliente> clientes = new ArrayList<>();
     
     
     //Auxiliar temporal. A revisión más adelante.
@@ -51,11 +54,12 @@ public class ServidorMulti{
             
             while (estado) {                
                 //Se espera a que un cliente se conecte al servidor...
-            socketCliente = socketServidor.accept();
+                // Esta conexión se "recicla" para aceptar nuevas conexiones
+                socketCliente = socketServidor.accept();
             
-            //...y cuando sucede se anuncian sus datos
-            System.out.println(tiempo.marcaTiempo()+"Se ha conectado un usuario desde la IP: "+
-                    socketCliente.getInetAddress().getHostAddress());
+                //...y cuando sucede se anuncian sus datos
+                 System.out.println(tiempo.marcaTiempo()+"Se ha conectado un usuario desde la IP: "+
+                   socketCliente.getInetAddress().getHostAddress());
             
             /**
              * Inicio MultiHilos
