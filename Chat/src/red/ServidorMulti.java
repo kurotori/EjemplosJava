@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author luiss
  */
-public class ServidorMulti{
+public class ServidorMulti implements Closeable{
     
     //Conexiones para el servidor
     private ServerSocket socketServidor;
@@ -59,6 +59,7 @@ public class ServidorMulti{
             socketServidor = new ServerSocket(puerto);
             //Se lo configura para permitir múltiples conexiones
             socketServidor.setReuseAddress(true);
+            //socketServidor.setSoTimeout(5000);
             
             System.out.println(tiempo.marcaTiempo() + "Servidor iniciado");
             System.out.println(tiempo.marcaTiempo() + "Esperando clientes...");
@@ -74,6 +75,7 @@ public class ServidorMulti{
                             
                             if (respuesta.equalsIgnoreCase("cerrar")) {
                                 estado = false;
+                                
                             }
                             
                         }
@@ -146,6 +148,7 @@ public class ServidorMulti{
     
     
     
+    
     /**
      * Cierra el servidor y sus conexiones.
      */
@@ -159,16 +162,12 @@ public class ServidorMulti{
             //Cerramos el socket del cliente y el socket del servidor
             
             socketCliente.close();
+            System.out.println("Cerrando conexiones...");
             socketServidor.close();
          } 
         catch (IOException e) {
              System.out.println("ERROR al cerrar el servidor: "+e.toString());
          }
-        finally{
-            socketCliente.close();
-            socketServidor.close();
-        }
-        
     }
     
      
@@ -182,6 +181,11 @@ public class ServidorMulti{
         int puerto = 6666;         
         ServidorMulti servidor = new ServidorMulti();
         servidor.iniciar(puerto);
+    }
+
+    @Override
+    public void close() throws IOException {
+        cerrar();
     }
 
 }

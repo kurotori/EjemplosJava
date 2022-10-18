@@ -46,7 +46,7 @@ public class Cliente {
         catch (IOException e) {
             System.out.println("ERROR al iniciar conexión cliente:" + e.toString());
         }
-
+        
     }
     
     
@@ -66,24 +66,23 @@ public class Cliente {
     
     
     /**
-     * Envía un mensaje identificado al Servidor
+     * Envía una solicitud identificado al usuario
      * @param usuario 
      * @param datos 
      * @param tipo
      */
-    public void enviarMensaje(Usuario usuario, String tipo, String datos) {
-        
+    public String enviarSolicitud(Usuario usuario, String tipo, String datos) {
+        String respuesta="";
         try {
             salida.println(usuario.getNombre()+"::"+tipo+"::"+datos);
-            String respuesta = entrada.readLine();
+            respuesta = recibirMensaje();//entrada.readLine();
             System.out.println(tiempo.marcaTiempo() +  respuesta);
         }
-        catch (IOException e){
-            System.out.println("ERROR al enviar mensaje desde el cliente:" + e.toString());
-        }
         catch (Exception e) {
-            System.out.println("ERROR al enviar mensaje desde el cliente:" + e.toString());
+            System.out.println("ERROR al enviar solicitud desde el cliente:" + e.toString());
         }
+        
+        return respuesta;
     }
     
     
@@ -103,15 +102,17 @@ public class Cliente {
     
 
     /**
-     * 
+     * Envia una solicitud para iniciar sesión en el servidor
      * @param usuario
      * @return 
      */
-    public String registrarUsuario(Usuario usuario){
-        enviarMensaje(usuario,"REG",usuario.getNombre());
-        String respuesta = recibirMensaje();
+    public String loginUsuario(Usuario usuario){
+        String respuesta = enviarSolicitud(usuario,"CMD::LOGIN",usuario.getNombre());
+        //String respuesta = recibirMensaje();
         return respuesta;
     }
+    
+    
             
     
 }

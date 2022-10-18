@@ -44,13 +44,13 @@ public class HiloCliente implements Runnable {
         this.socketCliente = socketCliente;
         this.entrada = entrada;
         this.salida = salida;
+        //Se genera una id mediante la clase 
         this.id = UUID.randomUUID();
         
         //Auxiliar: mostrar la id generada por el cliente conectado
         System.out.println(
                 "Cliente: "+socketCliente.getInetAddress().getCanonicalHostName()
-               +"ID: "+id
-        );
+               +"ID: "+id );
     }
 
     @Override
@@ -72,6 +72,7 @@ public class HiloCliente implements Runnable {
 
                 //Análisis del mensaje
                 String[] datosMensaje = texto.analizarSolicitud(mensaje);
+                procesarMensaje(datosMensaje);
                 
                 //Mostramos un registro del mensaje recibido
                 System.out.println( 
@@ -100,14 +101,16 @@ public class HiloCliente implements Runnable {
      * @param datosMensaje 
      */
     private void procesarMensaje(String[] datosMensaje){
-        if (datosMensaje[0].equals("ERROR")) {
+        if (datosMensaje[0].equals("ERROR ")) {
             System.out.println(tiempo.marcaTiempo() + datosMensaje[0] + datosMensaje[1]);
         } 
         else {
             switch (datosMensaje[1]) {
                 //Mensajes enviados por un usuario
                 case "MSG":
-                    
+                    for (HiloCliente cliente : ServidorMulti.clientes) {
+                        cliente.salida.println(datosMensaje[2]);
+                    }
                     break;
                     
                 //Comandos enviados desde la aplicación cliente    
@@ -115,8 +118,9 @@ public class HiloCliente implements Runnable {
                     //Evaluación de los comandos
                     switch (datosMensaje[2]) {
                         case "LOGIN":
-                            //String nombre = datosMensaje[3];
-                            //loginUsuario(nombre);
+                            String nombre = datosMensaje[3];
+                            System.out.println("el nombre recibido es " + nombre);
+                            loginUsuario(nombre);
                             break;
                         case "LOGOUT":
                             
@@ -135,6 +139,11 @@ public class HiloCliente implements Runnable {
     
     private void loginUsuario(String nombreUsuario){
         this.usuario = new Usuario(nombreUsuario);
+        
+        System.out.println(
+                tiempo.marcaTiempo() + 
+                "El usuario " + this.usuario.getNombre() + 
+                 " ha iniciado sesión desde el cliente " + this.id);
     }
     
 }

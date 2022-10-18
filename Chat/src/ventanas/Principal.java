@@ -29,16 +29,29 @@ public class Principal extends javax.swing.JFrame {
     
     public Principal(String usuario, String ipS, int puertoS, Inicio vInicio) {
         this.vInicio = vInicio;
+        
         this.usuario = new Usuario(usuario);
+        
         this.ipServidor = ipS;
         this.puertoServidor = puertoS;
         
         cliente = new Cliente();
         cliente.iniciarConexion(ipServidor, puertoServidor);
+        cliente.loginUsuario(this.usuario);
         
         initComponents();
     }
-
+    
+    Thread servicioCliente = new Thread(
+            new Runnable() {
+        @Override
+        public void run() {
+         
+        }
+            }
+    );
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -98,7 +111,7 @@ public class Principal extends javax.swing.JFrame {
     private void btnEnviarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnviarMouseClicked
         // TODO add your handling code here:
         String mensaje = txt_mensaje.getText();
-        cliente.enviarMensaje(usuario,"MENSAJE",mensaje);
+        cliente.enviarSolicitud(usuario,"MSG",mensaje);
         txt_mensaje.setText("");
     }//GEN-LAST:event_btnEnviarMouseClicked
 
