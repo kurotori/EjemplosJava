@@ -137,8 +137,23 @@ public class HiloCliente implements Runnable {
         }
     }
     
+    /**
+     * Agrega un usuario a la lista de usuarios y lo identifica en el sistema
+     * @param nombreUsuario 
+     */
     private void loginUsuario(String nombreUsuario){
-        this.usuario = new Usuario(nombreUsuario);
+        //Chequeamos si ya hay un usuario con ese nombre en el servidor
+        if (ServidorMulti.nombresDeUsuario.contains(nombreUsuario)) {
+            salida.println("Servidor::ERROR::Este nombre de usuario ya esta en uso");
+        } else {
+            this.usuario = new Usuario(nombreUsuario);
+            ServidorMulti.nombresDeUsuario.add(nombreUsuario);
+            salida.println("Servidor::MSG_EST::LOGIN_OK::"+this.id);
+            salida.println("Servidor::MSG_SRV::Bienvenido "+nombreUsuario);
+        }
+        
+        
+        
         
         System.out.println(
                 tiempo.marcaTiempo() + 

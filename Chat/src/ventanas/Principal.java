@@ -5,6 +5,7 @@
 package ventanas;
 
 import chat.Usuario;
+import javax.swing.JTextArea;
 import red.Cliente;
 import red.Servidor;
 
@@ -17,6 +18,8 @@ public class Principal extends javax.swing.JFrame {
     Usuario usuario;
     String ipServidor;
     int puertoServidor;
+    
+    //JTextArea txta_listaMensajes;
     
     Cliente cliente;
     /**
@@ -40,16 +43,33 @@ public class Principal extends javax.swing.JFrame {
         cliente.loginUsuario(this.usuario);
         
         initComponents();
+        
+        servicioCliente.start();
     }
     
+    //Hilo para recepción de mensajes
     Thread servicioCliente = new Thread(
             new Runnable() {
-        @Override
-        public void run() {
-         
-        }
+                @Override
+                public void run() {
+                    try {
+                        String mensajeDelServidor = "";
+                        while (true) {                            
+                            mensajeDelServidor = cliente.recibirMensaje();
+                            cargarTexto(mensajeDelServidor);
+                        }
+                        
+                    } catch (Exception e) {
+                    }
+                }
             }
-    );
+        );
+    
+    public void cargarTexto(String texto){
+        this.txta_listaMensajes.append(texto+"\n");
+    }
+    
+    
     
     
     /**

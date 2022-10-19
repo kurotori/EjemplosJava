@@ -39,9 +39,8 @@ public class ServidorMulti implements Closeable{
     Texto texto = new Texto();
     Tiempo tiempo = new Tiempo();
     
-    
-    
     static ArrayList<HiloCliente> clientes = new ArrayList<>();
+    static ArrayList<String> nombresDeUsuario = new ArrayList<>();
     
     
     //Auxiliar temporal. A revisión más adelante.

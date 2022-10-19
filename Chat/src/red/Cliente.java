@@ -5,6 +5,7 @@
 package red;
 
 import chat.Usuario;
+import herramientas.Texto;
 import herramientas.Tiempo;
 import java.net.*;
 import java.io.*;
@@ -22,6 +23,7 @@ public class Cliente {
     private BufferedReader entrada;
     
     Tiempo tiempo = new Tiempo();
+    Texto texto = new Texto();
     
 
     /**
@@ -75,8 +77,8 @@ public class Cliente {
         String respuesta="";
         try {
             salida.println(usuario.getNombre()+"::"+tipo+"::"+datos);
-            respuesta = recibirMensaje();//entrada.readLine();
-            System.out.println(tiempo.marcaTiempo() +  respuesta);
+            //respuesta = recibirMensaje();//entrada.readLine();
+            //System.out.println(tiempo.marcaTiempo() +  respuesta);
         }
         catch (Exception e) {
             System.out.println("ERROR al enviar solicitud desde el cliente:" + e.toString());
@@ -98,6 +100,32 @@ public class Cliente {
             System.out.println("ERROR al recibir mensaje desde el servidor:" + e.toString());
         }
         return resp;
+    }
+    
+    /**
+     * Analiza los mensajes del 
+     * @param mensaje 
+     */
+    private void analizarMensajeServidor(String mensaje){
+        String[] datosMensaje = texto.analizarSolicitud(mensaje);
+        
+        if (datosMensaje[0].equalsIgnoreCase("ERROR")) {
+            System.out.println(tiempo.marcaTiempo() + datosMensaje[0] + " " + datosMensaje[1]);
+        } else {
+            switch (datosMensaje[1]) {
+                case "MSG_EST":
+                    switch (datosMensaje[2]) {
+                        case "LOGIN_OK":
+                            
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+        }
     }
     
 
