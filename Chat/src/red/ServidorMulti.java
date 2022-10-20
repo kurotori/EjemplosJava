@@ -133,6 +133,12 @@ public class ServidorMulti implements Closeable{
             temporizador.scheduleAtFixedRate(
                 () -> { 
                      if (!estado) {
+                        try {
+                            servicio.interrupt();
+                            servicio.join(3000);
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }                         
                         cerrar();
                     }
                 },

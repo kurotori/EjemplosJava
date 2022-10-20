@@ -9,6 +9,7 @@ import herramientas.Texto;
 import herramientas.Tiempo;
 import java.net.*;
 import java.io.*;
+import java.util.UUID;
 
 /**
  *
@@ -21,6 +22,8 @@ public class Cliente {
     private PrintWriter salida;
     // Objeto para recibir datos desde el servidor
     private BufferedReader entrada;
+    
+    private UUID id = null;
     
     Tiempo tiempo = new Tiempo();
     Texto texto = new Texto();
@@ -107,6 +110,7 @@ public class Cliente {
      * @param mensaje 
      */
     private void analizarMensajeServidor(String mensaje){
+        String[] resultado = {"",""};
         String[] datosMensaje = texto.analizarSolicitud(mensaje);
         
         if (datosMensaje[0].equalsIgnoreCase("ERROR")) {
@@ -116,7 +120,7 @@ public class Cliente {
                 case "MSG_EST":
                     switch (datosMensaje[2]) {
                         case "LOGIN_OK":
-                            
+                            this.setId(UUID.fromString(datosMensaje[3]));
                             break;
                         default:
                             throw new AssertionError();
@@ -138,6 +142,20 @@ public class Cliente {
         String respuesta = enviarSolicitud(usuario,"CMD::LOGIN",usuario.getNombre());
         //String respuesta = recibirMensaje();
         return respuesta;
+    }
+
+    /**
+     * @return the id
+     */
+    public UUID getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(UUID id) {
+        this.id = id;
     }
     
     
