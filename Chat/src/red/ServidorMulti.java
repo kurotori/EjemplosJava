@@ -5,18 +5,12 @@
 package red;
 
 import chat.Sala;
-import chat.Usuario;
 import herramientas.Texto;
 import herramientas.Tiempo;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -58,7 +52,7 @@ public class ServidorMulti implements Closeable{
             socketServidor = new ServerSocket(puerto);
             //Se lo configura para permitir múltiples conexiones
             socketServidor.setReuseAddress(true);
-            //socketServidor.setSoTimeout(5000);
+            socketServidor.setSoTimeout(5000);
             
             System.out.println(tiempo.marcaTiempo() + "Servidor iniciado");
             System.out.println(tiempo.marcaTiempo() + "Esperando clientes...");
@@ -70,11 +64,19 @@ public class ServidorMulti implements Closeable{
                         public void run() {
                             Scanner teclado = new Scanner(System.in);
                             System.out.println("Escriba 'CERRAR' para cerrar el servidor...");
-                            String respuesta = teclado.nextLine();
+                            while(true){
+                                String respuesta = teclado.nextLine();
                             
-                            if (respuesta.equalsIgnoreCase("cerrar")) {
+                                if (respuesta.equalsIgnoreCase("cerrar")) {
                                 estado = false;
-                                
+                                cerrar();
+                                break;
+                                }
+                                else{
+                                    System.out.println(tiempo.marcaTiempo() + 
+                                            respuesta + " no es un comando reconocido");
+                                }
+                            
                             }
                             
                         }
@@ -93,7 +95,7 @@ public class ServidorMulti implements Closeable{
                                 //Se espera a que un cliente se conecte al servidor...
                                 // Esta conexión se "recicla" para aceptar nuevas conexiones
                                 socketCliente = socketServidor.accept();
-
+                                
                                 //...y cuando sucede se anuncian sus datos
                                 System.out.println(tiempo.marcaTiempo()+"Se ha conectado un usuario desde la IP: "+
                                 socketCliente.getInetAddress().getHostAddress());
@@ -113,12 +115,16 @@ public class ServidorMulti implements Closeable{
                                 //Añadimos el cliente al listado de clientes e iniciamos el hilo.
                                 clientes.add(cliente);
                                 hilo.start();
-                            } catch (IOException e) {
+                            } catch (SocketTimeoutException e) {
+                                System.out.println("Sin solicitudes... reseteando conexión");
+                                socketCliente = null;                             
+                            } catch (IOException e){
                                 System.out.println("ERROR al iniciar el servidor: "+e.toString());
                             }
+                            
                         }
                         //Si se cierra el bucle, el servidor cierra el socket y sus conexiones.
-                        //cerrar();
+                        cerrar();
                     }
                 }
             );
@@ -126,24 +132,7 @@ public class ServidorMulti implements Closeable{
             
             control.start();
             servicio.start();
-            
-            //Guardian: Comprueba rutinariamente si se solicitó el cierre del servidor
-            final ScheduledExecutorService temporizador = 
-                    Executors.newSingleThreadScheduledExecutor();
-            temporizador.scheduleAtFixedRate(
-                () -> { 
-                     if (!estado) {
-                        try {
-                            servicio.interrupt();
-                            servicio.join(3000);
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }                         
-                        cerrar();
-                    }
-                },
-                0, 500, TimeUnit.MILLISECONDS);
-            
+                    
         } 
         catch (IOException e) {
             System.out.println("ERROR al iniciar el servidor: "+e.toString());
@@ -166,11 +155,14 @@ public class ServidorMulti implements Closeable{
             //salida.close();
             //Cerramos el socket del cliente y el socket del servidor
             
-            socketCliente.close();
+            if (socketCliente!=null) {
+                socketCliente.close();
+            }
+            
             System.out.println("Cerrando conexiones...");
             socketServidor.close();
          } 
-        catch (IOException e) {
+        catch (Exception e) {
              System.out.println("ERROR al cerrar el servidor: "+e.toString());
          }
     }

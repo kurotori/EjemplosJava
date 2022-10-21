@@ -23,6 +23,8 @@ public class Cliente {
     // Objeto para recibir datos desde el servidor
     private BufferedReader entrada;
     
+    private Usuario usuario;
+    
     private UUID id = null;
     
     Tiempo tiempo = new Tiempo();
@@ -72,14 +74,16 @@ public class Cliente {
     
     /**
      * Envía una solicitud identificado al usuario
-     * @param usuario 
+     *  
      * @param datos 
      * @param tipo
+     * @return 
      */
-    public String enviarSolicitud(Usuario usuario, String tipo, String datos) {
-        String respuesta="";
+    //public String enviarSolicitud(Usuario usuario, String tipo, String datos) {
+    public void enviarSolicitud(String tipo, String datos) {
+        //String respuesta="";
         try {
-            salida.println(usuario.getNombre()+"::"+tipo+"::"+datos);
+            salida.println(this.id+"::"+tipo+"::"+datos);
             //respuesta = recibirMensaje();//entrada.readLine();
             //System.out.println(tiempo.marcaTiempo() +  respuesta);
         }
@@ -87,7 +91,7 @@ public class Cliente {
             System.out.println("ERROR al enviar solicitud desde el cliente:" + e.toString());
         }
         
-        return respuesta;
+        //return respuesta;
     }
     
     
@@ -99,6 +103,7 @@ public class Cliente {
         String resp="";
         try {
             resp = entrada.readLine();
+            System.out.println(tiempo.marcaTiempo() + resp);
         } catch (IOException e) {
             System.out.println("ERROR al recibir mensaje desde el servidor:" + e.toString());
         }
@@ -106,10 +111,10 @@ public class Cliente {
     }
     
     /**
-     * Analiza los mensajes del 
+     * Analiza los mensajes del servidor y devuelve un array String con el resultado correspondiente
      * @param mensaje 
      */
-    private void analizarMensajeServidor(String mensaje){
+    public String[] analizarMensajeServidor(String mensaje){
         String[] resultado = {"",""};
         String[] datosMensaje = texto.analizarSolicitud(mensaje);
         
@@ -117,19 +122,33 @@ public class Cliente {
             System.out.println(tiempo.marcaTiempo() + datosMensaje[0] + " " + datosMensaje[1]);
         } else {
             switch (datosMensaje[1]) {
+                //Mensajes de estado del servidor
                 case "MSG_EST":
                     switch (datosMensaje[2]) {
                         case "LOGIN_OK":
                             this.setId(UUID.fromString(datosMensaje[3]));
+                            resultado[0] = "OK";
+                            resultado[1] = "Login exitoso";
+                            break;
+                        case "ERROR":
+                            resultado[0] = "ERROR";
+                            resultado[1] = datosMensaje[3];
                             break;
                         default:
                             throw new AssertionError();
                     }
                     break;
+                //Mensajes con comunicados diversos del servidor    
+                case "MSG_SRV":
+                        resultado[0] = "OK";
+                        resultado[1] = datosMensaje[3];
+                    break;
                 default:
                     throw new AssertionError();
             }
         }
+        
+        return resultado;
     }
     
 
@@ -138,9 +157,11 @@ public class Cliente {
      * @param usuario
      * @return 
      */
-    public String loginUsuario(Usuario usuario){
-        String respuesta = enviarSolicitud(usuario,"CMD::LOGIN",usuario.getNombre());
-        //String respuesta = recibirMensaje();
+    public String[] loginUsuario(){
+        enviarSolicitud("CMD::LOGIN",usuario.getNombre());
+        String mensaje = recibirMensaje();
+        String[] respuesta = analizarMensajeServidor(mensaje);
+       
         return respuesta;
     }
 
@@ -156,6 +177,27 @@ public class Cliente {
      */
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    /**
+     * @return the usuario
+     */
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    /**
+     * @param usuario the usuario to set
+     */
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+    
+    /**
+     * @param usuario the usuario to set
+     */
+    public void setUsuario(String nombre) {
+        this.usuario = new Usuario(nombre);
     }
     
     

@@ -68,7 +68,7 @@ public class HiloCliente implements Runnable {
                     System.out.println("Nulo");
                 }
                 //Respondemos al cliente con una confirmación
-                salida.println("Servidor::MSG_EST::OK");
+                //salida.println("Servidor::MSG_EST::OK");
 
                 //Análisis del mensaje
                 String[] datosMensaje = texto.analizarSolicitud(mensaje);
@@ -144,7 +144,7 @@ public class HiloCliente implements Runnable {
     private void loginUsuario(String nombreUsuario){
         //Chequeamos si ya hay un usuario con ese nombre en el servidor
         if (ServidorMulti.nombresDeUsuario.contains(nombreUsuario)) {
-            salida.println("Servidor::ERROR::Este nombre de usuario ya esta en uso");
+            salida.println("Servidor::MSG_EST::ERROR::Este nombre de usuario ya esta en uso");
         } else {
             this.usuario = new Usuario(nombreUsuario);
             ServidorMulti.nombresDeUsuario.add(nombreUsuario);

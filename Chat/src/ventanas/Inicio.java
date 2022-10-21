@@ -4,11 +4,18 @@
  */
 package ventanas;
 
+import chat.Usuario;
+import javax.swing.JOptionPane;
+import red.Cliente;
+
 /**
  *
  * @author luiss
  */
 public class Inicio extends javax.swing.JFrame {
+    
+    Cliente cliente;
+    Usuario usuario;
 
     /**
      * Creates new form Inicio
@@ -100,12 +107,28 @@ public class Inicio extends javax.swing.JFrame {
 
     private void btn_EntrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_EntrarMouseClicked
         // TODO add your handling code here:
-        String usuario = txt_nombreUsuario.getText();
+        String nomUsuario = txt_nombreUsuario.getText();
         String ipServidor = txt_servidor.getText();
         
-        Principal vPrincipal = new Principal(usuario, ipServidor, 6666, this);
-        vPrincipal.setVisible(true);
-        this.setVisible(false);
+        cliente = new Cliente();
+        usuario = new Usuario(nomUsuario);
+        cliente.setUsuario(usuario);
+        
+        cliente.iniciarConexion(ipServidor,6666);
+        String[] login  = cliente.loginUsuario();
+        
+        if (login[0].equalsIgnoreCase("ERROR")) {
+            JOptionPane.showMessageDialog(
+                    rootPane, login[0]+":"+login[1],
+                    "Error",JOptionPane.ERROR_MESSAGE);
+        } else {
+            //Principal vPrincipal = new Principal(cliente, ipServidor, 6666, this);
+            Principal vPrincipal = new Principal(cliente,this);
+            vPrincipal.setVisible(true);
+            this.setVisible(false);
+        }
+        
+        
     }//GEN-LAST:event_btn_EntrarMouseClicked
 
     /**

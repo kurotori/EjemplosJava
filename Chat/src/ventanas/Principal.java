@@ -15,9 +15,9 @@ import red.Servidor;
  */
 public class Principal extends javax.swing.JFrame {
     Inicio vInicio;
-    Usuario usuario;
-    String ipServidor;
-    int puertoServidor;
+    //Usuario usuario;
+    //String ipServidor;
+    //int puertoServidor;
     
     //JTextArea txta_listaMensajes;
     
@@ -30,18 +30,20 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
     }
     
-    public Principal(String usuario, String ipS, int puertoS, Inicio vInicio) {
+    //public Principal(String usuario, String ipS, int puertoS, Inicio vInicio) {
+    public Principal(Cliente cliente, Inicio vInicio) {
         this.vInicio = vInicio;
         
-        this.usuario = new Usuario(usuario);
+        //this.usuario = new Usuario(usuario);
         
-        this.ipServidor = ipS;
+        /*this.ipServidor = ipS;
         this.puertoServidor = puertoS;
         
         cliente = new Cliente();
         cliente.iniciarConexion(ipServidor, puertoServidor);
-        cliente.loginUsuario(this.usuario);
+        cliente.loginUsuario(this.usuario);*/
         
+        this.cliente = cliente;
         initComponents();
         
         servicioCliente.start();
@@ -53,10 +55,16 @@ public class Principal extends javax.swing.JFrame {
                 @Override
                 public void run() {
                     try {
-                        String mensajeDelServidor = "";
+                        String[] mensajeDelServidor = new String[2];
                         while (true) {                            
-                            mensajeDelServidor = cliente.recibirMensaje();
-                            cargarTexto(mensajeDelServidor);
+                            String mensaje = cliente.recibirMensaje();
+                            mensajeDelServidor = cliente.analizarMensajeServidor(mensaje);
+                            
+                            if (mensajeDelServidor[0].equals("OK")) {
+                                cargarTexto(mensajeDelServidor[1]);
+                            } else {
+                            }
+                            
                         }
                         
                     } catch (Exception e) {
@@ -131,8 +139,9 @@ public class Principal extends javax.swing.JFrame {
     private void btnEnviarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnviarMouseClicked
         // TODO add your handling code here:
         String mensaje = txt_mensaje.getText();
-        cliente.enviarSolicitud(usuario,"MSG",mensaje);
+        cliente.enviarSolicitud("MSG",mensaje);
         txt_mensaje.setText("");
+        cargarTexto(mensaje);
     }//GEN-LAST:event_btnEnviarMouseClicked
 
     /**
