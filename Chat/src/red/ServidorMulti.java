@@ -33,12 +33,13 @@ public class ServidorMulti implements Closeable{
     Texto texto = new Texto();
     Tiempo tiempo = new Tiempo();
     
+    //Listados dinámicos de clientes conectados y usuarios en el sistema.
     static ArrayList<HiloCliente> clientes = new ArrayList<>();
     static ArrayList<String> nombresDeUsuario = new ArrayList<>();
     
     
     //Auxiliar temporal. A revisión más adelante.
-    Sala sala = new Sala("Común");
+    //Sala sala = new Sala("Común");
     
     /**
      * Permite iniciar el servidor en el puerto indicado
@@ -59,28 +60,27 @@ public class ServidorMulti implements Closeable{
             
             //Sub-hilo: Control del servicio
             Thread control = new Thread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            Scanner teclado = new Scanner(System.in);
-                            System.out.println("Escriba 'CERRAR' para cerrar el servidor...");
-                            while(true){
-                                String respuesta = teclado.nextLine();
-                            
-                                if (respuesta.equalsIgnoreCase("cerrar")) {
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Scanner teclado = new Scanner(System.in);
+                        System.out.println("Escriba 'CERRAR' para cerrar el servidor...");
+                        while(true){
+                            String respuesta = teclado.nextLine();
+
+                            if (respuesta.equalsIgnoreCase("cerrar")) {
                                 estado = false;
                                 cerrar();
                                 break;
-                                }
-                                else{
-                                    System.out.println(tiempo.marcaTiempo() + 
-                                            respuesta + " no es un comando reconocido");
-                                }
-                            
                             }
-                            
+                            else{
+                                System.out.println(tiempo.marcaTiempo() + 
+                                        respuesta + " no es un comando reconocido");
+                            }
                         }
+                        teclado.close();
                     }
+                }
             );
             
             
@@ -115,13 +115,14 @@ public class ServidorMulti implements Closeable{
                                 //Añadimos el cliente al listado de clientes e iniciamos el hilo.
                                 clientes.add(cliente);
                                 hilo.start();
+                                
+                                
                             } catch (SocketTimeoutException e) {
-                                System.out.println("Sin solicitudes... reseteando conexión");
-                                socketCliente = null;                             
+                                //System.out.println("Sin solicitudes... reseteando conexión");
+                                //socketCliente = null;                             
                             } catch (IOException e){
                                 System.out.println("ERROR al iniciar el servidor: "+e.toString());
                             }
-                            
                         }
                         //Si se cierra el bucle, el servidor cierra el socket y sus conexiones.
                         cerrar();
@@ -138,9 +139,6 @@ public class ServidorMulti implements Closeable{
             System.out.println("ERROR al iniciar el servidor: "+e.toString());
         }
     }
-    
-    
-    
     
     
     /**
@@ -166,15 +164,13 @@ public class ServidorMulti implements Closeable{
              System.out.println("ERROR al cerrar el servidor: "+e.toString());
          }
     }
-    
      
      
-     /**
-      * Permite iniciar el servidor de forma automática.
-      * @param args 
-      */
-     public static void main(String[] args) {
-        
+    /**
+     * Permite iniciar el servidor de forma automática.
+     * @param args 
+     */
+    public static void main(String[] args) {    
         int puerto = 6666;         
         ServidorMulti servidor = new ServidorMulti();
         servidor.iniciar(puerto);
@@ -184,5 +180,7 @@ public class ServidorMulti implements Closeable{
     public void close() throws IOException {
         cerrar();
     }
+    
+    
 
 }

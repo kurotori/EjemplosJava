@@ -14,13 +14,7 @@ import red.Servidor;
  * @author luiss
  */
 public class Principal extends javax.swing.JFrame {
-    Inicio vInicio;
-    //Usuario usuario;
-    //String ipServidor;
-    //int puertoServidor;
-    
-    //JTextArea txta_listaMensajes;
-    
+    Inicio vInicio;    
     Cliente cliente;
     /**
      * Creates new form Principal
@@ -33,17 +27,9 @@ public class Principal extends javax.swing.JFrame {
     //public Principal(String usuario, String ipS, int puertoS, Inicio vInicio) {
     public Principal(Cliente cliente, Inicio vInicio) {
         this.vInicio = vInicio;
-        
-        //this.usuario = new Usuario(usuario);
-        
-        /*this.ipServidor = ipS;
-        this.puertoServidor = puertoS;
-        
-        cliente = new Cliente();
-        cliente.iniciarConexion(ipServidor, puertoServidor);
-        cliente.loginUsuario(this.usuario);*/
-        
+                
         this.cliente = cliente;
+        this.setTitle( this.cliente.getUsuario().getNombre() + " - " + this.cliente.getId() );
         initComponents();
         
         servicioCliente.start();
@@ -56,8 +42,10 @@ public class Principal extends javax.swing.JFrame {
                 public void run() {
                     try {
                         String[] mensajeDelServidor = new String[2];
+                        
                         while (true) {                            
                             String mensaje = cliente.recibirMensaje();
+                            System.out.println("MSG Recibido en clase Cliente");
                             mensajeDelServidor = cliente.analizarMensajeServidor(mensaje);
                             
                             if (mensajeDelServidor[0].equals("OK")) {
@@ -68,6 +56,9 @@ public class Principal extends javax.swing.JFrame {
                         }
                         
                     } catch (Exception e) {
+                        System.out.println("ERROR en servicioCliente de clase Principal");
+                        System.out.println("ERROR: " + e.getMessage());
+                        System.out.println(e.getStackTrace());
                     }
                 }
             }
@@ -76,8 +67,6 @@ public class Principal extends javax.swing.JFrame {
     public void cargarTexto(String texto){
         this.txta_listaMensajes.append(texto+"\n");
     }
-    
-    
     
     
     /**
@@ -139,9 +128,9 @@ public class Principal extends javax.swing.JFrame {
     private void btnEnviarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnviarMouseClicked
         // TODO add your handling code here:
         String mensaje = txt_mensaje.getText();
-        cliente.enviarSolicitud("MSG",mensaje);
+        cliente.enviarSolicitud("MSG::PUB",mensaje);
         txt_mensaje.setText("");
-        cargarTexto(mensaje);
+        cargarTexto("Yo: " + mensaje);
     }//GEN-LAST:event_btnEnviarMouseClicked
 
     /**

@@ -141,7 +141,11 @@ public class Cliente {
                 //Mensajes con comunicados diversos del servidor    
                 case "MSG_SRV":
                         resultado[0] = "OK";
-                        resultado[1] = datosMensaje[3];
+                        resultado[1] = "Servidor: "+datosMensaje[2];
+                        break;
+                case "MSG_PUB":
+                    resultado[0] = "OK";
+                    resultado[1] = datosMensaje[2] + ": "+datosMensaje[3];
                     break;
                 default:
                     throw new AssertionError();

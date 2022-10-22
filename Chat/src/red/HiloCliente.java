@@ -49,8 +49,8 @@ public class HiloCliente implements Runnable {
         
         //Auxiliar: mostrar la id generada por el cliente conectado
         System.out.println(
-                "Cliente: "+socketCliente.getInetAddress().getCanonicalHostName()
-               +"ID: "+id );
+                "Hilo Cliente para: "+socketCliente.getInetAddress().getCanonicalHostName()
+               +" ID: "+id );
     }
 
     @Override
@@ -64,8 +64,15 @@ public class HiloCliente implements Runnable {
                 
                 //Esperamos un mensaje del cliente y lo almacenamos en la variable 'mensaje'
                 mensaje = entrada.readLine();
+                
+                //Un mensaje nulo (diferente de un mensaje vacío) se recibe cuando el cliente se
+                // desconecta forzosamente. En este caso se cierra la conexión del cliente.
                 if ( mensaje == null ) {
-                    System.out.println("Nulo");
+                    System.out.println(tiempo.marcaTiempo()+
+                            "EL cliente "+this.id + " se ha desconectado.");
+                    System.out.println(tiempo.marcaTiempo() + "Cerrando sesión de " + this.id);
+                    logoutUsuario();
+                    break;
                 }
                 //Respondemos al cliente con una confirmación
                 //salida.println("Servidor::MSG_EST::OK");
@@ -76,7 +83,7 @@ public class HiloCliente implements Runnable {
                 
                 //Mostramos un registro del mensaje recibido
                 System.out.println( 
-                        tiempo.marcaTiempo() + 
+                        tiempo.marcaTiempo() + "Reg "+
                         socketCliente.getInetAddress().getHostAddress() + 
                         ":" + mensaje );
                 }
@@ -90,7 +97,7 @@ public class HiloCliente implements Runnable {
                 System.out.println("ERROR: mensaje nulo");
                 System.out.println(e.getMessage());
                 mensaje = "salir";
-                }
+            }
         
     }
     
@@ -108,9 +115,14 @@ public class HiloCliente implements Runnable {
             switch (datosMensaje[1]) {
                 //Mensajes enviados por un usuario
                 case "MSG":
-                    for (HiloCliente cliente : ServidorMulti.clientes) {
-                        cliente.salida.println(datosMensaje[2]);
+                    
+                    switch (datosMensaje[2]) {
+                        case "PUB":
+                            enviarMsgPublico(datosMensaje[3]);
+                            break;
                     }
+                    
+                    
                     break;
                     
                 //Comandos enviados desde la aplicación cliente    
@@ -119,7 +131,6 @@ public class HiloCliente implements Runnable {
                     switch (datosMensaje[2]) {
                         case "LOGIN":
                             String nombre = datosMensaje[3];
-                            System.out.println("el nombre recibido es " + nombre);
                             loginUsuario(nombre);
                             break;
                         case "LOGOUT":
@@ -151,14 +162,46 @@ public class HiloCliente implements Runnable {
             salida.println("Servidor::MSG_EST::LOGIN_OK::"+this.id);
             salida.println("Servidor::MSG_SRV::Bienvenido "+nombreUsuario);
         }
-        
-        
-        
-        
+                
         System.out.println(
                 tiempo.marcaTiempo() + 
                 "El usuario " + this.usuario.getNombre() + 
                  " ha iniciado sesión desde el cliente " + this.id);
     }
+    
+    /**
+     * Permite cerrar la sesión de un usuario.
+     */
+    private void logoutUsuario(){
+        ServidorMulti.nombresDeUsuario.remove(this.usuario.getNombre());
+        ServidorMulti.clientes.remove(this);
+        System.out.println(tiempo.marcaTiempo()+ 
+                "Se ha cerrado la sesión del usuario "+ this.usuario.getNombre());
+        try {
+            this.entrada.close();
+            this.salida.close();
+        } catch (Exception e) {
+            System.out.println(tiempo.marcaTiempo()+
+                    "Se han detectado errores al cerrar el hilo cliente: "+
+                    e.getMessage());
+        }
+    }
+    
+    /**
+     * Envía un mensaje a todos los usuarios conectados al servidor
+     * @param mensaje 
+     */
+    public void enviarMsgPublico(String mensaje){
+        String nombreUsuario = this.usuario.getNombre();
+        for (HiloCliente cliente : ServidorMulti.clientes) {
+            if ( ! cliente.usuario.getNombre().equals(nombreUsuario)) {
+                    cliente.salida.println(
+                            "Servidor::MSG_PUB::"
+                            +this.usuario.getNombre()+"::"
+                            +mensaje);
+            }
+        }
+    }
+    //private void enviarMensajeAUsuario(String mensaje)
     
 }
