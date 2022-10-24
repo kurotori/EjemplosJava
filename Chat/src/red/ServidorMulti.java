@@ -4,7 +4,7 @@
  */
 package red;
 
-import chat.Sala;
+//import chat.Sala;
 import herramientas.Texto;
 import herramientas.Tiempo;
 import java.net.*;

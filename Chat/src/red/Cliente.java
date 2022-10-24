@@ -115,7 +115,7 @@ public class Cliente {
      * @param mensaje 
      */
     public String[] analizarMensajeServidor(String mensaje){
-        String[] resultado = {"",""};
+        String[] resultado = {"","",""};
         String[] datosMensaje = texto.analizarSolicitud(mensaje);
         
         if (datosMensaje[0].equalsIgnoreCase("ERROR")) {
@@ -130,25 +130,29 @@ public class Cliente {
                             resultado[0] = "OK";
                             resultado[1] = "Login exitoso";
                             break;
+                        //Listado de usuarios conectados
+                        case "USR_LST":
+                            resultado[0] = "OK";
+                            resultado[1] = "USUARIOS";
+                            resultado[2] = datosMensaje[3];
+                            break;
                         case "ERROR":
                             resultado[0] = "ERROR";
                             resultado[1] = datosMensaje[3];
                             break;
-                        default:
-                            throw new AssertionError();
                     }
                     break;
                 //Mensajes con comunicados diversos del servidor    
                 case "MSG_SRV":
                         resultado[0] = "OK";
-                        resultado[1] = "Servidor: "+datosMensaje[2];
+                        resultado[1] = "Servidor: ";
+                        resultado[2] = datosMensaje[2];
                         break;
                 case "MSG_PUB":
                     resultado[0] = "OK";
-                    resultado[1] = datosMensaje[2] + ": "+datosMensaje[3];
+                    resultado[1] = datosMensaje[2] + ": ";
+                    resultado[3] = datosMensaje[3];
                     break;
-                default:
-                    throw new AssertionError();
             }
         }
         

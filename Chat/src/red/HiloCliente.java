@@ -91,11 +91,13 @@ public class HiloCliente implements Runnable {
             catch(IOException e){
                 System.out.println("ERROR: mensaje nulo");
                 System.out.println(e.getMessage());
+                logoutUsuario();
                 mensaje = "salir";
             }
             catch (NullPointerException e) {
                 System.out.println("ERROR: mensaje nulo");
                 System.out.println(e.getMessage());
+                logoutUsuario();
                 mensaje = "salir";
             }
         
@@ -134,7 +136,7 @@ public class HiloCliente implements Runnable {
                             loginUsuario(nombre);
                             break;
                         case "LOGOUT":
-                            
+                            logoutUsuario();
                             break;
                         default:
                             throw new AssertionError();
@@ -155,26 +157,49 @@ public class HiloCliente implements Runnable {
     private void loginUsuario(String nombreUsuario){
         //Chequeamos si ya hay un usuario con ese nombre en el servidor
         if (ServidorMulti.nombresDeUsuario.contains(nombreUsuario)) {
+            //Si existe un usuario, bloqueamos su ingreso
             salida.println("Servidor::MSG_EST::ERROR::Este nombre de usuario ya esta en uso");
         } else {
+            //De lo contrario, añadimos su nombre a la conexión y a la lista de usuarios
             this.usuario = new Usuario(nombreUsuario);
             ServidorMulti.nombresDeUsuario.add(nombreUsuario);
+            
+            //Le enviamos datos identificatorios y un mensaje de bienvenida
             salida.println("Servidor::MSG_EST::LOGIN_OK::"+this.id);
             salida.println("Servidor::MSG_SRV::Bienvenido "+nombreUsuario);
-        }
-                
-        System.out.println(
+            
+            //Anunciamos a los otros usuarios que el usuario se ha conectado
+            enviarMsgPublico( this.usuario.getNombre() + 
+                 " ha entrado al servidor" );
+            
+            //Actualizamos el listado de usuarios en los clientes conectados
+            actualizarListaUsuarios();
+            
+            //Y generamos un registro en el servidor
+            System.out.println(
                 tiempo.marcaTiempo() + 
                 "El usuario " + this.usuario.getNombre() + 
                  " ha iniciado sesión desde el cliente " + this.id);
+        }
+                
+        
     }
     
     /**
      * Permite cerrar la sesión de un usuario.
      */
     private void logoutUsuario(){
+        //Removemos al usuario de las listas de usuarios y de la lista de clientes
         ServidorMulti.nombresDeUsuario.remove(this.usuario.getNombre());
         ServidorMulti.clientes.remove(this);
+        
+        //Enviamos un mensaje público anunciando que el usuario ha cerrado sesión
+        enviarMsgPublico( this.usuario.getNombre() + 
+                 " ha salido del servidor" );
+        
+        //Actualizamos el listado de usuarios en los clientes conectados
+        actualizarListaUsuarios();
+        //Generamos un registro en el servidor
         System.out.println(tiempo.marcaTiempo()+ 
                 "Se ha cerrado la sesión del usuario "+ this.usuario.getNombre());
         try {
@@ -192,8 +217,12 @@ public class HiloCliente implements Runnable {
      * @param mensaje 
      */
     public void enviarMsgPublico(String mensaje){
+        //Obtenemos el nombre del usuario remitente
         String nombreUsuario = this.usuario.getNombre();
+        
+        //Enviamos el mensaje a todos los usuarios mediante un forEach
         for (HiloCliente cliente : ServidorMulti.clientes) {
+            //Con un if, chequeamos para no enviar el mensaje al remitente
             if ( ! cliente.usuario.getNombre().equals(nombreUsuario)) {
                     cliente.salida.println(
                             "Servidor::MSG_PUB::"
@@ -201,6 +230,34 @@ public class HiloCliente implements Runnable {
                             +mensaje);
             }
         }
+    }
+    
+    /**
+     * Envía un mensaje de servicio a todos los usuarios conectados al servidor
+     * @param mensaje 
+     */
+    public void enviarMsgServicio(String mensaje, String tipo){
+        
+        //Enviamos el mensaje a todos los usuarios mediante un forEach
+        for (HiloCliente cliente : ServidorMulti.clientes) {
+                cliente.salida.println(
+                        "Servidor::MSG_SRV::"
+                        +tipo+"::"
+                        +mensaje);
+        }
+    }
+    
+    
+    
+    public void actualizarListaUsuarios(){
+        String resultado = "";
+        
+        for (HiloCliente cliente : ServidorMulti.clientes) {
+            resultado = resultado+cliente.usuario.getNombre()+"-@-";
+        }
+        
+        enviarMsgServicio(resultado, "USR_LST");
+        
     }
     //private void enviarMensajeAUsuario(String mensaje)
     

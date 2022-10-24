@@ -4,10 +4,14 @@
  */
 package ventanas;
 
-import chat.Usuario;
-import javax.swing.JTextArea;
+
+import herramientas.Texto;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.TableView;
 import red.Cliente;
-import red.Servidor;
 
 /**
  *
@@ -16,6 +20,7 @@ import red.Servidor;
 public class Principal extends javax.swing.JFrame {
     Inicio vInicio;    
     Cliente cliente;
+    Texto texto = new Texto();
     /**
      * Creates new form Principal
      */
@@ -41,16 +46,35 @@ public class Principal extends javax.swing.JFrame {
                 @Override
                 public void run() {
                     try {
-                        String[] mensajeDelServidor = new String[2];
+                        String[] mensajeDelServidor = new String[3];
                         
                         while (true) {                            
                             String mensaje = cliente.recibirMensaje();
+                            
+                            //Auxiliar. Puede borrarse
                             System.out.println("MSG Recibido en clase Cliente");
+                            
                             mensajeDelServidor = cliente.analizarMensajeServidor(mensaje);
                             
                             if (mensajeDelServidor[0].equals("OK")) {
-                                cargarTexto(mensajeDelServidor[1]);
+                                
+                                String[] m = {mensajeDelServidor[1],mensajeDelServidor[2]};
+                                
+                                switch (mensajeDelServidor[1]) {
+                                    case "Servidor: ":
+                                        cargarTexto(m, "servidor");
+                                        break;
+                                    case "USUARIOS":
+                                        
+                                        break;
+                                    default:
+                                        cargarTexto(m,"yo");
+                                }
                             } else {
+                                //En caso de errores, se notifican mediante un mensaje modal
+                                JOptionPane.showMessageDialog(
+                                    rootPane, mensajeDelServidor[0]+":"+mensajeDelServidor[1],
+                                    "Error",JOptionPane.ERROR_MESSAGE);
                             }
                             
                         }
@@ -58,14 +82,56 @@ public class Principal extends javax.swing.JFrame {
                     } catch (Exception e) {
                         System.out.println("ERROR en servicioCliente de clase Principal");
                         System.out.println("ERROR: " + e.getMessage());
-                        System.out.println(e.getStackTrace());
+                        
                     }
                 }
             }
         );
     
-    public void cargarTexto(String texto){
-        this.txta_listaMensajes.append(texto+"\n");
+    
+    
+    private void actualizarListaUsuarios(String[] listadoUsuarios){
+        
+        DefaultTableModel modelo = (DefaultTableModel) jTable2.getModel();
+        modelo.setRowCount(0);
+        
+        
+        for (String nombre : listadoUsuarios) {
+            modelo.addRow(new Object[]{nombre});
+        }
+    }
+    
+    
+    
+    /**
+     * Permite cargar mensajes recibidos en el panel de mensajes
+     * @param txt
+     * @param modo 
+     */
+    public void cargarTexto(String[] txt, String modo){
+        //this.txta_listaMensajes.append(texto+"\n");
+        int posFinal = 0;
+        SimpleAttributeSet[] atributos = texto.atributosDeTexto();
+        try {
+            switch (modo) {
+                case "servidor":
+                    posFinal = jTextPane1.getStyledDocument().getLength();
+                    jTextPane1.getStyledDocument().insertString(posFinal, txt[0], atributos[0]);
+                    posFinal = jTextPane1.getStyledDocument().getLength();
+                    jTextPane1.getStyledDocument().insertString(posFinal, txt[1]+"\n", atributos[1]);
+                    break;
+                case "yo":
+                    //posFinal = jTextPane1.getStyledDocument().getLength();
+                    //jTextPane1.getStyledDocument().insertString(posFinal, txt[0], atributos[3]);
+                    posFinal = jTextPane1.getStyledDocument().getLength();
+                    jTextPane1.getStyledDocument().insertString(posFinal, txt[1]+"\n", atributos[2]);
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+        } catch (Exception e) {
+        }
+        
     }
     
     
@@ -78,16 +144,14 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txta_listaMensajes = new javax.swing.JTextArea();
         txt_mensaje = new javax.swing.JTextField();
         btnEnviar = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        txta_listaMensajes.setColumns(20);
-        txta_listaMensajes.setRows(5);
-        jScrollPane1.setViewportView(txta_listaMensajes);
 
         btnEnviar.setText("Enviar");
         btnEnviar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -96,30 +160,60 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Usuarios"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(jTable2);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setResizable(false);
+        }
+
+        jTextPane1.setEditable(false);
+        jScrollPane4.setViewportView(jTextPane1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txt_mensaje)
+                        .addComponent(txt_mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEnviar)))
-                .addContainerGap())
+                        .addComponent(btnEnviar))
+                    .addComponent(jScrollPane4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txt_mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEnviar))
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txt_mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEnviar))
+                        .addGap(0, 52, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
@@ -130,7 +224,8 @@ public class Principal extends javax.swing.JFrame {
         String mensaje = txt_mensaje.getText();
         cliente.enviarSolicitud("MSG::PUB",mensaje);
         txt_mensaje.setText("");
-        cargarTexto("Yo: " + mensaje);
+        String[] m = {"Yo: ",mensaje};
+        cargarTexto(m,"yo");
     }//GEN-LAST:event_btnEnviarMouseClicked
 
     /**
@@ -170,8 +265,10 @@ public class Principal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnviar;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JTextField txt_mensaje;
-    private javax.swing.JTextArea txta_listaMensajes;
     // End of variables declaration//GEN-END:variables
 }

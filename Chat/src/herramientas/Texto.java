@@ -4,6 +4,9 @@
  */
 package herramientas;
 
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+
 /**
  *
  * @author luiss
@@ -36,5 +39,49 @@ public class Texto {
 
         return resultado;
     }
+    
+    
+    public String[] analizarListaUsuarios(String dato){
+        String[] resultado = new String[1];
+        
+        try {
+            resultado = dato.split("-@-");
+        } catch (Exception e) {
+            String[] r ={"ERROR","Mensaje vacío"};
+            resultado = r;
+        }
+        
+        return resultado;
+    }
+    
+    
+    /**
+     * Devuelve configuraciones de texto útiles para mostrar
+     * @return 
+     */
+    public SimpleAttributeSet[] atributosDeTexto(){
+        SimpleAttributeSet[] atributos = new SimpleAttributeSet[10];
+        
+        SimpleAttributeSet negrita = new SimpleAttributeSet();
+        StyleConstants.setBold(negrita, true);
+        atributos[0] = negrita;
+        
+        SimpleAttributeSet cursiva = new SimpleAttributeSet();
+        StyleConstants.setItalic(cursiva, true);
+        atributos[1] = cursiva;
+        
+        SimpleAttributeSet derecha = new SimpleAttributeSet();
+        StyleConstants.setAlignment(derecha, StyleConstants.ALIGN_RIGHT);
+        atributos[2] = derecha;
+        
+        SimpleAttributeSet negritaDerecha = new SimpleAttributeSet();
+        StyleConstants.setBold(negritaDerecha, true);
+        StyleConstants.setAlignment(negritaDerecha, StyleConstants.ALIGN_RIGHT);
+        atributos[3] = negritaDerecha;
+        
+        return atributos;
+        
+    }
+    
     
 }

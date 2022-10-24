@@ -117,10 +117,13 @@ public class Inicio extends javax.swing.JFrame {
         cliente.iniciarConexion(ipServidor,6666);
         String[] login  = cliente.loginUsuario();
         
+        //Ante un error de conexión, mostramos un error en un mensaje modal
         if (login[0].equalsIgnoreCase("ERROR")) {
+            
             JOptionPane.showMessageDialog(
                     rootPane, login[0]+":"+login[1],
                     "Error",JOptionPane.ERROR_MESSAGE);
+            
         } else {
             //Principal vPrincipal = new Principal(cliente, ipServidor, 6666, this);
             Principal vPrincipal = new Principal(cliente,this);
