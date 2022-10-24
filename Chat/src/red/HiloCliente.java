@@ -236,12 +236,12 @@ public class HiloCliente implements Runnable {
      * Envía un mensaje de servicio a todos los usuarios conectados al servidor
      * @param mensaje 
      */
-    public void enviarMsgServicio(String mensaje, String tipo){
+    public void enviarMsgEstado(String mensaje, String tipo){
         
         //Enviamos el mensaje a todos los usuarios mediante un forEach
         for (HiloCliente cliente : ServidorMulti.clientes) {
                 cliente.salida.println(
-                        "Servidor::MSG_SRV::"
+                        "Servidor::MSG_EST::"
                         +tipo+"::"
                         +mensaje);
         }
@@ -256,7 +256,7 @@ public class HiloCliente implements Runnable {
             resultado = resultado+cliente.usuario.getNombre()+"-@-";
         }
         
-        enviarMsgServicio(resultado, "USR_LST");
+        enviarMsgEstado(resultado, "USR_LST");
         
     }
     //private void enviarMensajeAUsuario(String mensaje)

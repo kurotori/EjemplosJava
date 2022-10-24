@@ -151,7 +151,7 @@ public class Cliente {
                 case "MSG_PUB":
                     resultado[0] = "OK";
                     resultado[1] = datosMensaje[2] + ": ";
-                    resultado[3] = datosMensaje[3];
+                    resultado[2] = datosMensaje[3];
                     break;
             }
         }

@@ -65,7 +65,8 @@ public class Principal extends javax.swing.JFrame {
                                         cargarTexto(m, "servidor");
                                         break;
                                     case "USUARIOS":
-                                        
+                                        String[] usuarios = texto.analizarListaUsuarios(m[1]);
+                                        actualizarListaUsuarios(usuarios);
                                         break;
                                     default:
                                         cargarTexto(m,"yo");
@@ -82,6 +83,9 @@ public class Principal extends javax.swing.JFrame {
                     } catch (Exception e) {
                         System.out.println("ERROR en servicioCliente de clase Principal");
                         System.out.println("ERROR: " + e.getMessage());
+                        for (StackTraceElement ste : e.getStackTrace()) {
+                            System.out.println(ste.toString());
+                        }
                         
                     }
                 }
@@ -121,8 +125,8 @@ public class Principal extends javax.swing.JFrame {
                     jTextPane1.getStyledDocument().insertString(posFinal, txt[1]+"\n", atributos[1]);
                     break;
                 case "yo":
-                    //posFinal = jTextPane1.getStyledDocument().getLength();
-                    //jTextPane1.getStyledDocument().insertString(posFinal, txt[0], atributos[3]);
+                    posFinal = jTextPane1.getStyledDocument().getLength();
+                    jTextPane1.getStyledDocument().insertString(posFinal, txt[0], atributos[3]);
                     posFinal = jTextPane1.getStyledDocument().getLength();
                     jTextPane1.getStyledDocument().insertString(posFinal, txt[1]+"\n", atributos[2]);
                     break;
