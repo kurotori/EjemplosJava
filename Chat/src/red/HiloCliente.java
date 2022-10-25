@@ -115,15 +115,18 @@ public class HiloCliente implements Runnable {
         } 
         else {
             switch (datosMensaje[1]) {
-                //Mensajes enviados por un usuario
+                //Mensajes enviados por un usuario desde la aplicación cliente
                 case "MSG":
-                    
                     switch (datosMensaje[2]) {
+                        //Mensajes públicos
                         case "PUB":
                             enviarMsgPublico(datosMensaje[3]);
                             break;
+                        //Mensajes a usuarios específicos
+                        case "USR":
+                            
+                            break;
                     }
-                    
                     
                     break;
                     
@@ -131,10 +134,12 @@ public class HiloCliente implements Runnable {
                 case "CMD":
                     //Evaluación de los comandos
                     switch (datosMensaje[2]) {
+                        //Solicitud de inicio de sesión 
                         case "LOGIN":
                             String nombre = datosMensaje[3];
                             loginUsuario(nombre);
                             break;
+                        //Solicitud de cierre de sesión
                         case "LOGOUT":
                             logoutUsuario();
                             break;
@@ -142,8 +147,7 @@ public class HiloCliente implements Runnable {
                             throw new AssertionError();
                     }
                     break;
-                
-                //
+                    
                 default:
                     throw new AssertionError();
             }
