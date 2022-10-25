@@ -169,8 +169,8 @@ public class HiloCliente implements Runnable {
             salida.println("Servidor::MSG_SRV::Bienvenido "+nombreUsuario);
             
             //Anunciamos a los otros usuarios que el usuario se ha conectado
-            enviarMsgPublico( this.usuario.getNombre() + 
-                 " ha entrado al servidor" );
+            enviarMsgEstado(this.usuario.getNombre() + 
+                 " ha entrado al servidor", "MSG_SRV");
             
             //Actualizamos el listado de usuarios en los clientes conectados
             actualizarListaUsuarios();
@@ -194,8 +194,8 @@ public class HiloCliente implements Runnable {
         ServidorMulti.clientes.remove(this);
         
         //Enviamos un mensaje público anunciando que el usuario ha cerrado sesión
-        enviarMsgPublico( this.usuario.getNombre() + 
-                 " ha salido del servidor" );
+        enviarMsgEstado(this.usuario.getNombre() + 
+                 " ha salido del servidor","MSG_SRV" );
         
         //Actualizamos el listado de usuarios en los clientes conectados
         actualizarListaUsuarios();
