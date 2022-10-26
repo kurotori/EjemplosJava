@@ -153,14 +153,18 @@ public class Cliente {
                  * Servidor::MSG_PUB::nombre_usuario::mensaje
                  */
                 case "MSG_SRV":
-                        resultado[0] = "OK";
-                        resultado[1] = "Servidor: ";
-                        resultado[2] = datosMensaje[2];
-                        break;
+                    resultado[0] = "OK";
+                    resultado[1] = "Servidor: ";
+                    resultado[2] = datosMensaje[2];
+                    break;
+                //Mensajes de un usuario a todos los usuarios
                 case "MSG_PUB":
                     resultado[0] = "OK";
                     resultado[1] = datosMensaje[2] + ": ";
                     resultado[2] = datosMensaje[3];
+                    break;
+                //Mensajes directos de otro usuario al usuario de este cliente
+                case "MSG_USR":
                     break;
             }
         }

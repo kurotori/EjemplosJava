@@ -207,6 +207,7 @@ public class HiloCliente implements Runnable {
         ServidorMulti.clientes.remove(this);
         
         //Enviamos un mensaje público anunciando que el usuario ha cerrado sesión
+
         enviarMsgServidor(this.usuario.getNombre() + 
                  " ha salido del servidor" );
         

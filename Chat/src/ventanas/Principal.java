@@ -101,7 +101,7 @@ public class Principal extends javax.swing.JFrame {
         
         
         for (String nombre : listadoUsuarios) {
-            if ( ! cliente.getUsuario().getNombre().equals(nombre)) {
+            if ( ! this.cliente.getUsuario().getNombre().equals(nombre)) {
                 modelo.addRow(new Object[]{nombre});
             }
         }
