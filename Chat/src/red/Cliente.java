@@ -123,6 +123,11 @@ public class Cliente {
         } else {
             switch (datosMensaje[1]) {
                 //Mensajes de estado del servidor
+                /**
+                 * Servidor::MSG_EST::LOGIN_OK::id_sesión
+                 * Servidor::MSG_EST::USR_LST::nombre_usuario-@-nombre_usuario-@- 
+                 * Servidor::MSG_EST::ERROR::datos_del_error
+                 */
                 case "MSG_EST":
                     switch (datosMensaje[2]) {
                         case "LOGIN_OK":
@@ -142,7 +147,11 @@ public class Cliente {
                             break;
                     }
                     break;
-                //Mensajes con comunicados diversos del servidor    
+                //Mensajes con comunicados diversos del servidor
+                /**
+                 * Servidor::MSG_SRV::mensaje
+                 * Servidor::MSG_PUB::nombre_usuario::mensaje
+                 */
                 case "MSG_SRV":
                         resultado[0] = "OK";
                         resultado[1] = "Servidor: ";

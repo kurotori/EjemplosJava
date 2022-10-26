@@ -116,6 +116,10 @@ public class HiloCliente implements Runnable {
         else {
             switch (datosMensaje[1]) {
                 //Mensajes enviados por un usuario desde la aplicación cliente
+                /**
+                 * nombre_usuario::MSG::PUB::mensaje
+                 * nombre_usuario::MSG::USR::nombre_usuario_dest::mensaje
+                 */
                 case "MSG":
                     switch (datosMensaje[2]) {
                         //Mensajes públicos
@@ -130,7 +134,12 @@ public class HiloCliente implements Runnable {
                     
                     break;
                     
-                //Comandos enviados desde la aplicación cliente    
+                //Comandos enviados desde la aplicación cliente
+                /**
+                 * nombre_usuario::CMD::LOGIN::nombre_usuario
+                 * nombre_usuario::CMD::LOGOUT
+                 * nombre_usuario::CMD::
+                 */
                 case "CMD":
                     //Evaluación de los comandos
                     switch (datosMensaje[2]) {
@@ -164,17 +173,17 @@ public class HiloCliente implements Runnable {
             //Si existe un usuario, bloqueamos su ingreso
             salida.println("Servidor::MSG_EST::ERROR::Este nombre de usuario ya esta en uso");
         } else {
-            //De lo contrario, añadimos su nombre a la conexión y a la lista de usuarios
+            //De lo contrario, anunciamos a los otros usuarios que el usuario se ha conectado
+            enviarMsgServidor(nombreUsuario + 
+                 " ha entrado al servidor" );
+            
+            //Y añadimos su nombre a la conexión y a la lista de usuarios
             this.usuario = new Usuario(nombreUsuario);
             ServidorMulti.nombresDeUsuario.add(nombreUsuario);
             
             //Le enviamos datos identificatorios y un mensaje de bienvenida
             salida.println("Servidor::MSG_EST::LOGIN_OK::"+this.id);
             salida.println("Servidor::MSG_SRV::Bienvenido "+nombreUsuario);
-            
-            //Anunciamos a los otros usuarios que el usuario se ha conectado
-            enviarMsgPublico( this.usuario.getNombre() + 
-                 " ha entrado al servidor" );
             
             //Actualizamos el listado de usuarios en los clientes conectados
             actualizarListaUsuarios();
@@ -198,7 +207,7 @@ public class HiloCliente implements Runnable {
         ServidorMulti.clientes.remove(this);
         
         //Enviamos un mensaje público anunciando que el usuario ha cerrado sesión
-        enviarMsgPublico( this.usuario.getNombre() + 
+        enviarMsgServidor(this.usuario.getNombre() + 
                  " ha salido del servidor" );
         
         //Actualizamos el listado de usuarios en los clientes conectados
@@ -239,6 +248,7 @@ public class HiloCliente implements Runnable {
     /**
      * Envía un mensaje de servicio a todos los usuarios conectados al servidor
      * @param mensaje 
+     * @param tipo 
      */
     public void enviarMsgEstado(String mensaje, String tipo){
         
@@ -251,6 +261,17 @@ public class HiloCliente implements Runnable {
         }
     }
     
+    /**
+     * Permite enviar un mensaje público del servidor
+     * @param mensaje 
+     */
+    public void enviarMsgServidor(String mensaje){
+        for (HiloCliente cliente : ServidorMulti.clientes) {
+            cliente.salida.println(
+                    "Servidor::MSG_SRV::"
+                    +mensaje);
+        }
+    }
     
     
     public void actualizarListaUsuarios(){
