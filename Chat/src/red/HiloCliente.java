@@ -164,12 +164,31 @@ public class HiloCliente implements Runnable {
     }
     
     /**
+     * Chequea si un usuario ya existe en el sistema.
+     * @param nombre
+     * @return true si el usuario existe, false si no existe
+     */
+    private boolean usuarioExiste(String nombre){
+        boolean existe = false;
+        
+        for (HiloCliente cliente : ServidorMulti.clientes) {
+            if (cliente.usuario.getNombre().equals(nombre)) {
+                existe=true;
+                break;
+            }
+        }
+        
+        return existe;
+    }
+    
+    /**
      * Agrega un usuario a la lista de usuarios y lo identifica en el sistema
      * @param nombreUsuario 
      */
     private void loginUsuario(String nombreUsuario){
+        
         //Chequeamos si ya hay un usuario con ese nombre en el servidor
-        if (ServidorMulti.nombresDeUsuario.contains(nombreUsuario)) {
+        if (usuarioExiste(nombreUsuario)) {
             //Si existe un usuario, bloqueamos su ingreso
             salida.println("Servidor::MSG_EST::ERROR::Este nombre de usuario ya esta en uso");
         } else {
@@ -179,7 +198,7 @@ public class HiloCliente implements Runnable {
             
             //Y añadimos su nombre a la conexión y a la lista de usuarios
             this.usuario = new Usuario(nombreUsuario);
-            ServidorMulti.nombresDeUsuario.add(nombreUsuario);
+            //ServidorMulti.nombresDeUsuario.add(nombreUsuario);
             
             //Le enviamos datos identificatorios y un mensaje de bienvenida
             salida.println("Servidor::MSG_EST::LOGIN_OK::"+this.id);
@@ -275,6 +294,19 @@ public class HiloCliente implements Runnable {
     }
     
     
+    /**
+     * Permite enviar un mensaje privado a un usuario específico
+     * @param mensaje
+     * @param usuario 
+     */
+    public void enviarMsgPrivado(String mensaje, String usuario){
+        
+    }
+    
+    
+    /**
+     * Permite enviar un listado actualizado de usuarios a los clientes conectados
+     */
     public void actualizarListaUsuarios(){
         String resultado = "";
         

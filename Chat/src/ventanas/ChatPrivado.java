@@ -5,13 +5,10 @@
 package ventanas;
 
 
+import chat.Usuario;
 import herramientas.Texto;
 import java.awt.event.KeyEvent;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.TableView;
 import red.Cliente;
 
 /**
@@ -21,6 +18,7 @@ import red.Cliente;
 public class ChatPrivado extends javax.swing.JFrame {
     Principal vPrincipal;
     Cliente cliente;
+    String destinatario;
     Texto texto = new Texto();
     /**
      * Creates new form Principal
@@ -31,7 +29,7 @@ public class ChatPrivado extends javax.swing.JFrame {
     }
     
     //public Principal(String usuario, String ipS, int puertoS, Inicio vInicio) {
-    public ChatPrivado(Cliente cliente, Principal vPrincipal) {
+    public ChatPrivado(Cliente cliente, String destinatario, Principal vPrincipal) {
         this.vPrincipal = vPrincipal;
         this.cliente = cliente;
         
@@ -79,7 +77,7 @@ public class ChatPrivado extends javax.swing.JFrame {
     
     private void enviarMensaje(){
         String mensaje = txt_mensaje.getText();
-        cliente.enviarSolicitud("MSG::PUB",mensaje);
+        cliente.enviarSolicitud("MSG::USR::"+destinatario,mensaje);
         txt_mensaje.setText("");
         String[] m = {"Yo: ",mensaje};
         cargarTexto(m,"yo");

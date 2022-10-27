@@ -165,6 +165,9 @@ public class Cliente {
                     break;
                 //Mensajes directos de otro usuario al usuario de este cliente
                 case "MSG_USR":
+                    resultado = new String[]{"","","",""};
+                    resultado[0] = "OK";
+                    
                     break;
             }
         }
