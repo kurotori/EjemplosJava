@@ -53,6 +53,9 @@ public class HiloCliente implements Runnable {
                +" ID: "+id );
     }
 
+    /**
+     * Permite iniciar los procesos del hilo
+     */
     @Override
     public void run() {
         //Preparamos un String para los datos de entrada desde el cliente

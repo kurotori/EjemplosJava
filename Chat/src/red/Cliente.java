@@ -83,7 +83,7 @@ public class Cliente {
     public void enviarSolicitud(String tipo, String datos) {
         //String respuesta="";
         try {
-            salida.println(this.id+"::"+tipo+"::"+datos);
+            salida.println(tipo+"::"+datos);
             //respuesta = recibirMensaje();//entrada.readLine();
             //System.out.println(tiempo.marcaTiempo() +  respuesta);
         }
